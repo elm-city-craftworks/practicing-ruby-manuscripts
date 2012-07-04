@@ -13,3 +13,8 @@ http://github.com/elm-city-craftworks/practicing-ruby-manuscripts so
 that others can find these source materials, but that is optional.
 
 Please see the AUTHORS.md file in this repository for copyright information.
+
+For any questions, please contact gregory@practicingruby.com. I am especially
+interested in hearing from folks who would like to translate these articles into
+other languages (both spoken languages and programming languages!), but I'd love
+to hear from anyone who wishes to make use of these materials for any purpose.
