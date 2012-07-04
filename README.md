@@ -24,5 +24,5 @@ to hear from anyone who wishes to make use of these materials for any purpose.
 I believe that it's only right for me to release my articles for free after a
 reasonable amount of time has passed, but this project is still a TON of work,
 and would not exist without my subscribers. You can get access to a lot more
-articles and make it possible for me to keep publishing by signing up for an
+articles and make it possible for me to keep publishing by signing up for a paid
 account. It's only $8/month, and it's totally worth it.
