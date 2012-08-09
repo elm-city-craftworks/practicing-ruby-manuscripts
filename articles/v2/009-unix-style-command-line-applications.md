@@ -193,7 +193,11 @@ lines.next while lines.peek.chomp.empty?
 
 This code does an arbitrary amount of line-by-line lookahead until either a nonblank line is found or the end of the file is reached. It does so in a purely stateless and memory-efficient manner and is perhaps the most interesting line of code in this entire project. The downside of this approach is that it requires the entire `RCat::Display` object to be designed from the ground up to work with `Enumerator` objects. However, I struggled to come up with an alternative implementation that didn't involve some sort of complicated state machine/buffering mechanism that would be equally cumbersome to work with.
 
-As tempting as it is to continue discussing the pros and cons of different approaches to this particular problem, it's probably best for us to get back on track and look at some more basic problems that arise when working on command-line applications. I will now turn to the method that I asked you to treat as a black box in our earlier examples, `RCat::Application#parse_options`.
+As tempting as it is to continue discussing the pros and cons of different
+approaches to this particular problem, it's probably best for us to get back on
+track and look at some more basic problems that arise when working on
+command-line applications. I will now turn to the `parse_options` method that I asked you 
+to treat as a black box in our earlier examples.
 
 ### Options parsing
 
@@ -220,7 +224,7 @@ module RCat
 end
 ```
 
-The job of `OptionParser#parse` is to take a given arguments array and match it against the callbacks defined via the `OptionParser#on` method. Whenever a flag is matched, the associated block for that flag is executed. Finally, any unmatched arguments are returned. In the case of `rcat`, the unmatched arguments consist of the list of files we want to concatenate and display. The following standalone example demonstrates what's going on in `RCat::Application`:
+The job of `OptionParser#parse` is to take an arguments array and match it against the callbacks defined via the `OptionParser#on` method. Whenever a flag is matched, the associated block for that flag is executed. Finally, any unmatched arguments are returned. In the case of `rcat`, the unmatched arguments consist of the list of files we want to concatenate and display. The following example demonstrates what's going on in `RCat::Application`:
 
 ```ruby
 require "optparse"

@@ -1,4 +1,6 @@
-In [Issue #1](http://practicingruby.com/articles/29) we discussed Ruby's lookup path and proved by example that class inheritance is just a small part of the overall picture. To recap, Ruby methods are looked up in the following order:
+In [Issue #1](http://practicingruby.com/articles/29) we discussed Ruby's lookup
+path and proved by example that class inheritance is only a small part of the 
+picture. To recap, Ruby methods are looked up in the following order:
 
 1. Methods defined in the object's singleton class (i.e. the object itself)
 1. Modules mixed into the singleton class in reverse order of inclusion
@@ -63,7 +65,7 @@ The downside to designing code this way is that it does make third-party modific
 
  * You can use `alias_method` to create a monkeypatch to `Timer`, which will inject your code into the original application, but runs risks of naming clashes and other nasty things.
 
-While it ultimately depends on how the calling code uses this `Timer` class, and what features are provided for making extensions, it's not going to be trivial to modify systems built in this fashion. But because we already determined this was a narrow bit of functionality designed to be used internally within a larger application, it isn't necessarily a problem that it isn't super extendable.
+While it ultimately depends on how the calling code uses this `Timer` class, and what features are provided for making extensions, it's not going to be trivial to modify systems built in this fashion. But because we already determined this was a narrow bit of functionality designed to be used internally within a larger application, it isn't a problem that it isn't super extendable.
 
 Many of the rules that apply to defining your own classes also apply to inheritance based designs, so let's investigate that now.
 
@@ -71,7 +73,7 @@ Many of the rules that apply to defining your own classes also apply to inherita
 
 For those working with Rails, you already encounter class inheritance on a daily basis, through the ActiveRecord ORM. Despite the terrible choice of name, `ActiveRecord::Base` is a reasonable example of when class inheritance is a decent option.
 
-Consider the typical ActiveRecord model, and how many become no more complex than the following definition:
+Consider the typical ActiveRecord model, which is often extremely simple:
 
 ```ruby
 class User < ActiveRecord::Base 
@@ -93,7 +95,7 @@ Before we move on to other topics, I'd like to offer another example outside of 
 
 The PDF generation library <a href="http://prawn.majesticseacreature.com">Prawn</a> provides a class that's designed to be inherited from, `Prawn::Document`. I made use of this functionality recently to build a small typesetting library for formatting technical articles. While I won't go into much detail here, you can check out the <a href="http://github.com/madriska/jambalaya">implementation and example code</a>.
 
-What you'll find in <a href="https://github.com/madriska/jambalaya/blob/master/lib/jambalaya.rb">lib/jambalaya.rb</a> is that except for a custom factory method for generating the document, Jambalaya introduces no new state, relying on calls to `Prawn::Document` to do all the heavy lifting. You can also see that <a href="https://github.com/madriska/jambalaya/blob/master/example/rbp_ch1.rb">examples/rbp_ch1.rb</a> gives the illusion of a totally new special purpose DSL, but that in truth, almost all the work is being done by Prawn under the hood.
+What you'll find in <a href="https://github.com/madriska/jambalaya/blob/master/lib/jambalaya.rb">lib/jambalaya.rb</a> is that except for a custom factory method for generating the document, Jambalaya introduces no new state, relying on calls to `Prawn::Document` to do all the heavy lifting. You can also see that <a href="https://github.com/madriska/jambalaya/blob/master/example/rbp_ch1.rb">examples/rbp_ch1.rb</a> gives the illusion of a new special purpose DSL, but that in truth, almost all the work is being done by Prawn under the hood.
 
 Unfortunately, the disadvantages of class inheritance become clear the farther away you get from these scenarios in which the subclass truly is analogous to its parent class. You get only one parent class, and chaining to it is a commitment that you must be willing to respect all the way up the hierarchy. For the scenarios we've shown, the benefits outweigh the drawbacks, but for many others, they do not.
 
@@ -101,11 +103,17 @@ In Issue #1, I asked the question of which techniques are special cases, and whi
 
 ### Mixing modules into a class
 
-If you want to see the power of mixins, you need to look no farther than Ruby's `Enumerable` module. Rather than relying on a common base class to provide iterators for collections, Ruby mixes in the `Enumerable` module into the structures it provides, including `Array` and `Hash`. This is where a whole host of useful methods come from, including `map`, `select`, and `inject`.
+If you want to see the power of mixins, you need to look no farther than Ruby's
+`Enumerable` module. Rather than relying on a common base class to provide
+iterators for collections, Ruby mixes in the `Enumerable` module into its core structures, 
+including `Array` and `Hash`. This is where a whole host of useful methods come from, 
+including `map`, `select`, and `inject`.
 
 The beauty of this design is that it imposes a much lighter contract than the rigid is-a relationship enforced by class inheritance. Instead, mixins focuses on what you can do with an object rather than what that object is. It makes perfect sense to say both `Hash` and `Array` objects have elements that can be enumerated over. As far as Ruby is concerned, the same can be true about any object which defines an `each()` method.
 
-Let's take a look at a custom Ruby class which implements each and mixes in `Enumerable`. It is a simple numerical queue which is file-backed, from the same project our `Timer` came from.
+Let's take a look at a custom Ruby class which implements each and mixes in
+`Enumerable`. It is a simple file-backed numerical queue, from the same project 
+our `Timer` came from.
 
 ```ruby
 class Queue 
@@ -160,7 +168,7 @@ This is where modules shine. They allow some of the benefits of inheritance in t
 
 ### Exploiting the lookup order of mixins
 
-Methods are looked up in mixins in reverse order of their inclusion, giving the last module you mixed in a priority spot in the lookup path. A pleasant effect that arises naturally from this rule is that it provides an elegant technique for monkey patching that does not rely on method aliasing. Let's look at an example of a typical patch that uses method aliasing, and how it could be written differently.
+Methods are looked up in mixins in reverse order of their inclusion, giving the last module you mixed in a priority spot in the lookup path. A pleasant effect that arises naturally from this rule is that it provides an elegant technique for monkey patching that does not rely on method aliasing. Let's look at a patch that uses method aliasing, and how it could be written differently.
 
 Below is the code that Rubygems uses to patch `require` to add in gem loading functionality. Since `require` is just a method in Ruby, and not a keyword, the patch is relatively straightforward in pure Ruby.
 
@@ -248,13 +256,17 @@ array.extend(MathHelpers)
 p array.average
 ```
 
-If you try these ideas out, chances are you'll find other good uses for per-object behavior as well.
+If you try these ideas out, you'll almost certainly find uses for them in other
+contexts, too.
 
 ### Reflections
 
 Hopefully you've learned something new about Ruby's method lookup rules, or at least been given some new things to think about and explore. If you've come from a background in which inheritance has been your only tool, you will likely have to retrain yourself a bit to make full use of what Ruby has to offer.
 
-Whenever you compare one of these options to the other, consider your context and how much the advantages and disadvantages of each technique affect your particular situation. The correct approach always depends on that context, and if in doubt, experiment and see what seems to fit best.
+Whenever you compare one of these options to the other, consider your context
+and how much the advantages and disadvantages of each technique affect your
+particular situation. The correct approach always depends on that context, and
+if in doubt, experiment and see what works best.
 
 More discussion on this topic is welcome in the comments section below. While I wrote this article a while ago, I am happy to jump back into the topic as long as folks have interesting ideas and questions to share.
   

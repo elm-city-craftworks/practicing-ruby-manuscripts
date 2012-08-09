@@ -66,7 +66,10 @@ end
 MyApp::Client.authenticate('my_user', 'seekrit')
 ```
 
-Using ordinary Ruby constants is no more complicated than referring to data stored in a YAML file, but gives you the full power of Ruby in your configuration scripts. In more complex configurations, you may even end up writing a mini-DSL, as shown in the `AccessControl` code below.
+Using ordinary Ruby constants is no more complicated than referring to data
+stored in a YAML file, but gives you the full power of Ruby in your
+configuration scripts. In more complex configurations, you may even build
+a mini-DSL, as shown in the following example:
 
 ```ruby
 AccessControl.configure do
@@ -87,7 +90,7 @@ AccessControl.configure do
 end
 ```
 
-While this looks like vanilla configuration code on the surface, we can see that what we're actually working with are full blown Ruby objects. Here are some examples of how this system is used:
+While this looks like vanilla configuration code on the surface, we can see that what we're working with are full blown Ruby objects. Here are some examples of how this system is used:
 
 ```ruby
 >> AccessControl.roles_with_permission(:create_quizzes)
@@ -196,7 +199,8 @@ Adding config vars:
 Restarting app...done.
 ```
 
-In the application code, we see the variables accessed in a similar fashion to our previous example.
+In the application, these variables are accessed in a similar fashion to our
+previous example:
 
 ```ruby
 AWS::S3::Base.establish_connection!(
@@ -247,7 +251,7 @@ This article turned out to be longer than I expected it to be, but hopefully was
 
 * Raise an appropriate error message when a config file is missing. You can do this by doing a `File.exist?` check before loading your configuration file, or by rescuing the error a failed load causes and then re-raising a more specific error that instructs the user on where to set up their configuration file.
 
-* Make it as easy as possible for users to override defaults by merging their overrides rather than forcing them to replace whole configuration structures in order to make a small change.
+* Make it very easy for users to override defaults by merging their overrides rather than forcing them to replace whole configuration structures in order to make a small change.
 
 ### Reflections 
 

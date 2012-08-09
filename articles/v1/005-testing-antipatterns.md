@@ -1,6 +1,6 @@
 Ruby has been described as having a test-obsessed culture. In many ways, this is a key strength of our community, as it often leads to producing better, more reliable software. Unfortunately, Ruby developers often focus more on the quantity of tests through metrics such as code coverage than they do on the quality of the tests they're writing. 
 
-Crafting a well written test suite isn't easy, even for fairly experienced developers. After doing some initial sketches about what I could cover about improper ways to design and write tests, I realized I could probably dedicate an entire book to the topic. Rather than covering many anti-patterns in a shallow fashion, I decided to cover a single example in depth today. I'll revisit the topic from time to time in future issues, exposing a new ugly little corner of the Ruby testing world.
+Crafting a well written test suite isn't easy, even for fairly experienced developers. After doing some initial sketches about what I could cover about improper ways to design and write tests, I realized I could probably dedicate an entire book to the topic. Rather than covering many anti-patterns in a shallow fashion, I decided to cover a single example in depth today. I'll revisit the topic in future issues, exposing a new ugly little corner of the Ruby testing world.
 
 ### Testing Anti-Pattern: Testing private methods
 
@@ -10,7 +10,7 @@ If you are using `send` to test private methods in your tests, you are almost ce
 * A method that actually deserves to be public on the current object 
 * A method that is only private to hide a design flaw
 
-Take a look at the three objects below and try to match them up with each pattern listed above.
+Take a look at the three objects below and try to match them to the patterns listed above.
 
 ```ruby
 class Book
@@ -144,7 +144,7 @@ def test_copies_remaining
 end
 ```
 
-So far we've seen two extremes: Private methods that are rightfully private and do not need to be tested explicitly, and private methods that really ought to be public so that they can be tested explicitly. We will now examine the space between these two opposite ends of the spectrum.  
+So far we've seen two extremes: Private methods that are rightfully private and do not need to be tested explicitly, and private methods that ought to be public so that they can be tested explicitly. We will now examine the space between these two opposite ends of the spectrum.  
 
 Let's think a bit about how we could test the `InStockBook#isbn` shown below.
 
@@ -230,7 +230,8 @@ class InStockBook
 end
 ```
 
-Our updated `isbn` tests only need to change slightly to accommodate this change, as shown below.
+Our updated `isbn` tests only need to change slightly to accommodate this
+change:
 
 ```ruby
 def test_retreive_isbn
@@ -244,7 +245,11 @@ def test_retreive_isbn
 end
 ```
 
-Now, when reading the tests for `InStockBook`, the developer can safely gloss over `IsbnService`'s implementation until its contract changes. With this dilemma solved, we've now comprehensively categorized the strategies that allow you to avoid testing private methods without sacrificing the clarity of your test suite or its overall coverage of your implementation code.
+Now, when reading the tests for `InStockBook`, the developer can safely gloss
+over `IsbnService`'s implementation until its contract changes. With this
+dilemma solved, we've now comprehensively categorized the strategies that allow
+you to avoid testing private methods without sacrificing the clarity and
+coverage of your test suite.
 
 ### Reflections
 
