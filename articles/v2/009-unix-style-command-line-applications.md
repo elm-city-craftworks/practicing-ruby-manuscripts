@@ -10,7 +10,7 @@ _NOTE: Regardless of whether you are attempting to build your own version of `rc
 
 Our first task is to make it possible to run the `rcat` script without having to type something like `ruby path/to/rcat` each time we run it. This task can be done in three easy steps.
 
-1) Add a shebang line to your script.
+**1) Add a shebang line to your script.**
 
 If you look at `bin/rcat` in my code, you'll see that it starts with the following line:
 
@@ -20,7 +20,7 @@ If you look at `bin/rcat` in my code, you'll see that it starts with the followi
 
 This line (commonly called a shebang line) tells the shell what interpreter to use to process the rest of the file. Rather than providing a path directly to the Ruby interpreter, I instead use the path to the standard `env` utility. This step allows `env` to figure out which `ruby` executable is present in our current environment and to use that interpreter to process the rest of the file. This approach is preferable because it is [more portable](http://en.wikipedia.org/wiki/Shebang_line#Portability) than hard-coding a path to a particular Ruby install. Although Ruby can be installed in any number of places, the somewhat standardized location of `env` makes it reasonably dependable.
 
-2) Make your script executable.
+**2) Make your script executable.**
 
 Once the shebang line is set up, it's necessary to update the permissions on the `bin/rcat` file. Running the following command from the project root will make `bin/rcat` executable:
 
@@ -39,7 +39,7 @@ are created equal.
 ... continued ...
 ```
 
-3) Add your script to the shell's lookup path.
+**3) Add your script to the shell's lookup path.**
 
 The final step is to add the executable to the shell's lookup path so that it can be called as a simple command. In Bash-like shells, the path is updated by modifying the `PATH` environment variable, as shown in the following example:
 
@@ -262,7 +262,7 @@ Now that I've covered how to get data in and out of our `rcat` application, we c
 
 Formatting text for the console can be a bit cumbersome, but some things are easier than they seem. For example, the tidy output of `cat -n` shown here is not especially hard to implement:
 
-```
+<pre style="font-size: 0.8em">
 $ cat -n data/gettysburg.txt 
    1  Four score and seven years ago, our fathers brought forth on this continent a
    2  new nation, conceived in Liberty and dedicated to the proposition that all men
@@ -286,7 +286,7 @@ $ cat -n data/gettysburg.txt
   20  these dead shall not have died in vain -- that this nation, under God, shall
   21  have a new birth of freedom -- and that government of the people, by the people,
   22  for the people, shall not perish from the earth.
-```
+</pre>
 
 On my system, `cat` seems to assume a fixed-width column with space for up to six digits. This format looks great for any file with fewer than a million lines in it, but eventually breaks down once you cross that boundary.
 
