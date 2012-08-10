@@ -2,9 +2,9 @@
 
 Although knowing [how to use modules for namespacing](http://practicingruby.com/articles/36) is important, it's really only a small part of what you can do with modules. What modules do best is providing a convenient way to write code that be mixed into other objects, augmenting their behaviors. Because modules facilitate code sharing in a way that is distinct from both the general OO concept of class inheritance and from things like Java's interfaces, they require you to think about your design in a way that's a bit different from most other object oriented programming languages.
 
-While I imagine most of our readers are at least vaguely comfortable with using mixins, I'll refer to some basic examples of core Ruby mixins to illustrate their power before moving on to more subtle points.
-
-Consider the following bit of code which implements lazily evaluated computations:
+While I imagine that most of our readers are comfortable with using mixins, I'll
+refer to some core Ruby mixins to illustrate their power before moving on to more 
+subtle points. For example, consider the following bit of code which implements lazily evaluated computations:
 
 ```ruby
 class Computation
@@ -114,7 +114,10 @@ end
 
 Now, if you imagine these method definitions literally getting pasted into your `Computation` class when `Comparable` is included, you'll see that it would provide a behavior that is functionally equivalent to our initial example.
 
-Of course, it wouldn't make sense for Ruby to implement such a feature for us without using it in its own structures. As it turns out, Ruby's numeric classes all implement `<=>`, so we can actually simplify our definition even further by simply delegating our `<=>` call to the result of the computations.
+Of course, it wouldn't make sense for Ruby to implement such a feature for us
+without using it in its own structures. Because Ruby's numeric classes
+all implement `<=>`, we are able to simply delegate our `<=>` call to the 
+result of the computations.
 
 ```ruby
 class Computation
@@ -203,7 +206,7 @@ While this is amore complicated example than our walkthrough of `Comparable`, th
 
 ### Using Mix-ins to Augment Objects Directly
 
-As you probably either already know or can imagine, Ruby's mixin capability is not limited to simply including new behavior into a class definition. You can also extend the behavior of a class itself, through the use of the `extend()` method. We can look to the Ruby standard library <i>forwardable</i> for a nice example of how this is used. Consider the following trivial `Stack` implementation.
+As you may already know, Ruby's mixin capability is not limited to simply including new behavior into a class definition. You can also extend the behavior of a class itself, through the use of the `extend()` method. We can look to the Ruby standard library <i>forwardable</i> for a nice example of how this is used. Consider the following trivial `Stack` implementation.
 
 ```ruby
 require "forwardable"
@@ -295,7 +298,10 @@ end
 AnotherClass.hello #=> "hi"
 ```
 
-Be sure to note at this point that `extend()` and `include()` are two totally different operations. Because you did not extend `SomeClass` with `Greeter`, you could not call `SomeClass.hello()`. Similarly, you cannot call `AnotherClass.new.hello()` without explicitly including Greeter.
+Be sure to note at this point that `extend()` and `include()` are two totally
+different operations. Because you did not extend `SomeClass` with `Greeter`, you
+could not call `SomeClass.hello()`. Similarly, you cannot call
+`AnotherClass.new.hello()` without explicitly including `Greeter`.
 
 From the examples so far, it might seem as if `include()` is for defining instance methods, and `extend()` is for class methods. But that is not quite accurate, and the next bit of code illustrates just how much deeper the rabbit hole goes.
 
@@ -317,7 +323,9 @@ MyClass.extend(Greeter)
 MyClass.hello #=> "hi"
 ```
 
-If you feel like you fully understand the lines above, you're ready for the rest of this mini-series. If not, please ponder the following questions and post your thoughts in the comments section.
+If you feel like you understand the lines above, you're ready for the rest
+of this mini-series. If not, please ponder the following questions and leave a
+comment sharing your thoughts.
 
 ### Questions To Consider
 

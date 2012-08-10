@@ -41,11 +41,13 @@ This is the approach I took as I worked on this problem myself, and you'll be ab
 
 Here is my [first commit](https://github.com/sandal/tictactoe/commit/5af96941d74f8014a3276b77fe67c17e0ed5e2df) of the evening. And this is the [source tree](https://github.com/sandal/tictactoe/tree/5af96941d74f8014a3276b77fe67c17e0ed5e2df).
 
-Tiny changes really, but it's the first thing I do as soon as I've exited 'spike mode' on any project, no matter how small. The structure I've used is fairly standard, and it does two things for me.
+Tiny changes really, but it's the first thing I do as soon as I've exited 'spike
+mode' on any project, no matter how small. I've used a standard structure, and
+it does two things for me:
 
 1. Allows me to load my whole library with a single require. (See app.rb for example and note how it doesn't change throughout this walkthrough)
 
-1. Places 100% of what I build under a single constant's namespace (in this case, `TicTacToe`)
+1. Places 100% of what I build under a single constant's namespace (i.e. `TicTacToe`)
 
 These two points pretty much guarantee me that I won't have any naming clashes or unexpected collisions with other people's code unless I plan on loading a library that might clobber the name `TicTacToe` or the `require` path of <i>"tictactoe/*"</i>. It also makes it easy for me to start interacting with my code from scripts I write, from irb, and from unit tests. For so little work, we get a ton of benefit, and this is a great place to start when doing any sort of cleanup.
 
@@ -115,7 +117,8 @@ def check_draw
 end
 ```
 
-This now allows the logic for a draw to live in Rules, but the calling code in `Game` to look like this:
+This allows the draw logic to live in `Rules`, with calling code in `Game`
+that looks like this:
 
 ```ruby
 check_draw { puts "It's a draw" }
@@ -156,7 +159,8 @@ Still, this sort of practice gnaws on your subconscious, and I've seen it lead t
 
 ### Submissions from our readers
 
-I haven't had a chance to review them in depth, but a few of our readers did submit their own explorations to share with others. Check out the [github network graph](https://github.com/sandal/tictactoe/network) to see what others have done.
+I haven't had a chance to review them in depth, but a few readers did share
+their own explorations with us. Check out the [github network graph](https://github.com/sandal/tictactoe/network) to see what others have done.
 
 Looking forward to hearing your thoughts on this exercise, and whether it seems like something you could make good use of. Until next time, happy hacking!
 

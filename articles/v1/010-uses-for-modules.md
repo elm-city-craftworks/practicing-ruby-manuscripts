@@ -1,6 +1,12 @@
 In the last two issues, we covered mixins and namespacing, two of the most common uses for modules. In the second half of this series, we'll look at some other ways to use modules that are not quite so obvious.
 
-Today, we'll focus on the question that caused me to write this series in the first place. Many readers were confused by my use of `extend self` within earlier Practicing Ruby articles, and this lead to a number of interesting questions on the mailing list at the time these articles were originally published. While I tried my best to answer them directly, I think we're in much better shape for studying this topic now that the last two articles have laid a bit of a foundation for us.
+We can now focus on the question that caused me to write this series in the
+first place. Many readers were confused by my use of `extend self` within
+earlier Practicing Ruby articles, and this lead to a number of interesting
+questions on the mailing list at the time these articles were originally
+published. While I tried my best to answer them directly, I think we're in better
+shape to study this topic now that the last two articles have laid a 
+foundation for us.
 
 ### Review of how `extend()` works
 
@@ -69,7 +75,9 @@ module Greeter
 end
 ```
 
-The reason `extend()` works here is because `self == Greeter` in this context. Noticing this detail allows us to use slightly more dynamic approach, resulting in the code shown below.
+The reason `extend()` works here is because `self == Greeter` in this context.
+Noticing this detail allows us to use slightly more dynamic approach, resulting
+in the following code.
 
 ```ruby
 module Greeter
@@ -102,7 +110,11 @@ When we create class definitions, we tend to think of the objects we're building
 => 1.0
 ```
 
-It seems unlikely that we'd ever want to create an instance of a `Math` object, since it doesn't really deal with any state that persists beyond a single function call. But it might be desirable to mix this functionality into another object so that you can call math functions without repeating the `Math` constant all over the place. For this reason, Ruby implements `Math` as a module.
+It seems unlikely that we'd want to create an instance of a `Math` object, since
+it doesn't really deal with any state that persists beyond a single function
+call. But it might be desirable to mix this functionality into another object so
+that you can call math functions without repeating the `Math` constant
+excessively. For this reason, Ruby implements `Math` as a module.
 
 ```ruby
 >> Math.class
@@ -183,7 +195,7 @@ end
 
 To implement code that allows the definitions above to be modeled internally, we need to consider how this system will be used. While it is easy to imagine roles shifting over time, getting added and removed as needed, it's hard to imagine what the utility of having more than one `AccessControl` object would be.
 
-For this reason, it's fairly safe to say that `AccessControl` configuration data is essentially global information, and so does not need the data segregation that creating instances of a class provides.
+For this reason, it's safe to say that `AccessControl` configuration data is global information, and so does not need the data segregation that creating instances of a class provides.
 
 By modeling `AccessControl` as a module rather than class, we end up with an object that we can store data on that can't be instantiated.
 
@@ -238,9 +250,13 @@ However, if you work with other people's code, it is likely that you'll run into
 
 ### Reflections
 
-In Issue 11, we'll be wrapping up with some even more specialized examples of using modules, showing how they can be used to build plugin systems as well as how they can be used as a replacement for monkey patching. But before we close the books on today's lesson, I'd like to share some thoughts that were rattling around in the back of my mind while I was preparing this article.
+In Issue 11, we'll wrap up with some even more specialized uses for modules, showing how they can be used to build plugin systems as well as how they can be used as a replacement for monkey patching. But before we close the books on today's lesson, I'd like to share some thoughts that were rattling around in the back of my mind while I was preparing this article.
 
-The techniques I've shown today can be useful in certain edge case scenarios where an ordinary class definition might not be the best tool to use. But upon reviewing my own code, I find that I use the first technique of creating function bags often but sparingly in each project, and the second technique of building singleton objects rarely and typically only for configuration systems.
+The techniques I've shown today can be useful in certain edge case scenarios
+where an ordinary class definition might not be the best tool to use. In my own
+code, I tend to use the first technique of creating function bags often but sparingly, 
+and the second technique of building singleton objects rarely and typically only 
+for configuration systems.
 
 Upon reflection, I wonder to myself whether the upsides of these techniques outweigh the cost of explaining them. I don't really have a definitive answer to that question, but it's really something I think about often.
 
@@ -255,3 +271,4 @@ At least, that's what I think. What about you?
   
 > **NOTE:** This article has also been published on the Ruby Best Practices blog. There [may be additional commentary](http://blog.rubybestpractices.com/posts/gregory/040-issue-10-uses-for-modules.html#disqus_thread) 
 over there worth taking a look at.
+

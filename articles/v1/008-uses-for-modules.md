@@ -34,7 +34,7 @@ puts document.generate
 
 As long as the two libraries were never loaded at the same time, there would be no issue. But as soon as someone loaded both libraries, some quite confusing behavior would happen. One might think that defining two different classes with the same name would lead to some sort of error being raised by Ruby, but with open classes, that is not the case. Ruby would actually apply the definitions of `Document` one after the other, with whatever file was required last taking precedence. The end result would in all likelihood be a very broken `Document` class that could generate neither XML nor PDF.
 
-But there really is no reason for this to happen, as long as both libraries take care to properly namespace things. Shown below is an example of two `Document` classes that could co-exist peacefully.
+But there is no reason for this to happen, as long as both libraries take care to namespace things. Shown below is an example of two `Document` classes that could co-exist peacefully.
 
 ```ruby
 # somewhere in your_xml_lib
@@ -140,7 +140,7 @@ module FancyReporter
 end
 ```
 
-While the designer of `FancyReporter` was most likely just trying to be well organized by offering `FancyReporter::String::Formatter`, this small change causes immediate headaches because it changes the meaning of `String.new` in `Document`'s initialize method. In fact, you cannot even create an instance of `Document` before the following error is raised:
+While the designer of `FancyReporter` was most likely trying to be well organized by offering `FancyReporter::String::Formatter`, this small change causes headaches because it changes the meaning of `String.new` in `Document`'s initialize method. In fact, you cannot even create an instance of `Document` before the following error is raised:
 
 ```ruby
 ?> FancyReporter::Document.new
@@ -150,7 +150,14 @@ NoMethodError: undefined method `new' for FancyReporter::String:Module
 	from (irb):53
 ```
 
-There are a number of ways this problem can be avoided. Often times, it's possible to come up with alternative names that do not clash with core objects, and when that's the case, it's preferable. In this particular case, `String.new` can also be replaced with `""`, as nothing can change what objects are created via Ruby's string literal syntax. But there is also an approach that works independent of context, and that is to use explicit constant lookups from the global namespace. You can see an example of how explicit lookups look in the code below.
+There are a number of ways this problem can be avoided. Often times, it's
+possible to come up with alternative names that do not clash with core objects,
+and when that's the case, it's preferable. In this particular case, `String.new`
+can also be replaced with `""`, as nothing can change what objects are created
+via Ruby's string literal syntax. But there is also an approach that works
+independent of context, and that is to use explicit constant lookups from the
+global namespace. You can see an example of explicit lookups in the following
+code:
 
 ```ruby
 module FancyReporter
@@ -196,12 +203,11 @@ In your code, you should feel free to replace any method calls that use this sty
 obj.bar # obj is an instance of Foo
 ```
 
-If this argument wasn't convincing enough on it's own, you should know that every time you replace a `Foo::bar` call with `Foo.bar`, a brand new baby unicorn is born beneath a magnificent double rainbow. That should be reason enough to reverse this outdated practice, right?
+If this argument wasn't convincing enough, you should know that every time you replace a `Foo::bar` call with `Foo.bar`, a brand new baby unicorn is born beneath a magnificent double rainbow. That should be reason enough to reverse this outdated practice, right?
 
 ### Reflections 
 
-This article probably gave you more details than you ever cared to know about namespacing. But future articles will be sure to blow your mind with what else modules can do. However, if you have any questions or thoughts about what we've discussed so far, feel free to leave them in the comments section below. When Practicing Ruby originally ran, a key feature were the great discussions we had on the mailing list. I'd love to see the same thing happen here on this blog.
-
+This article probably gave you more details than you ever cared to know about namespacing. But future articles will be sure to blow your mind with what else modules can do. However, if you have any questions or thoughts about what we've discussed so far, feel free to leave them in the comments section below.
   
 > **NOTE:** This article has also been published on the Ruby Best Practices blog. There [may be additional commentary](http://blog.rubybestpractices.com/posts/gregory/037-issue-8-uses-for-modules.html#disqus_thread) 
 over there worth taking a look at.
