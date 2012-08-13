@@ -46,11 +46,11 @@ yMK";eval s.delete!(" \n").unpack("m*")[0]##
 ### Copyright (C) 2004  Christian Neukirchen
 ```
 
-When run, this code prints out <i>"Merry christmas, ... and a happy new year! --chris2"</i> by randomly filling in each character in a little command line animation. After some folks commented on how cool this hack was, someone inevitably asked how it was done, which lead another Ruby hacker Michael Neumann to post his guess to the list. Here is what he said:
+When run, this code prints out <i>"Merry christmas, ... and a happy new year! --chris2"</i> by randomly filling in each character in a little animation. After some folks commented on how cool this hack was, someone inevitably asked how it was done, which lead another Ruby hacker Michael Neumann to post his guess to the list. Here is what he said:
 
 >Pretty easy (except drawing the tree :). Write the source-code first, then `base64` encode it, and insert newlines/whitespace to make the picture.
 
-At the time, I was way too much of a beginner with Ruby to fully appreciate the solution discussion, and mostly just chalked it up to magic. But now, the above statement is immediately obvious to me, and since it wasn't really further explained in the mailing list thread, I can give an example for those who are in the same shoes now that I was in a few years ago.
+At the time, I was too much of a beginner with Ruby to fully appreciate the solution discussion, and mostly just chalked it up to magic. But now, the above statement is immediately obvious to me, and since it wasn't further explained in the mailing list thread, I can give an example for those who are in the same shoes now that I was in a few years ago.
 
 What I didn't know at the time is that `Base64` is an encoding that allows you to translate any binary data into purely printable characters by converting the contents into a string of characters that uses basic alphanumeric values. I would have known that if I read the documentation for Ruby's `Base64` standard library, but again, I was a newbie at the time. :)
 
@@ -70,7 +70,7 @@ hello world
 => nil
 ```
 
-Another way of decoding `Base64` encoded strings is via the `String#unpack` method, using the template `"m*"`. You can see this in Christian's code, which is probably what tipped Michael off in the first place. With that in mind, we can build a tiny obfuscated "Hello World" program.
+Another way of decoding `Base64` encoded strings is via the `String#unpack` method, using the template `"m*"`. You can see this in Christian's code, which is what tipped Michael off in the first place. With that in mind, we can build a tiny obfuscated "Hello World" program.
 
 ```ruby
 s = 
@@ -83,22 +83,30 @@ s =
 eval s.delete(" \n").unpack("m*")[0]
 ```
 
-In the end, Michael was right when he said this was pretty easy to do. As long as you understand a couple basic concepts about string manipulation and how to decode a `base64` encoded string, you could use this technique to render your code as pretty much any arbitrary ASCII art.
+In the end, Michael was right when he said this was pretty easy to do. As long
+as you understand some basic string manipulation and how to decode a `base64` 
+encoded string, you could use this technique to render your code as pretty much any arbitrary ASCII art.
 
 Of course, one would expect that the guy who eventually would go on to create something as clever and useful as the [Rack web server interface](https://github.com/rack/rack) would have an extra trick or two up his sleeve. Not to disappoint, Christian confirmed Michael's explanation was valid, but in the process revealed that he felt it'd be too fragile and tedious to manually format the code himself into the desired ascii art.
 
 For those curious about how he got around this problem, you can check out his [full solution](http://groups.google.com/group/comp.lang.ruby/msg/aa5b4f8eaa85e6b8?dmode=source)
- which implements a simple code generator that fills in a template with the `base64` encoded source.
+ which implements a code generator that fills in a template with the `base64` encoded source.
 
 While the code should be pretty easy to follow with a little effort, feel free to post questions here if you need help figuring things out. It's a really neat bit of code and is worth exploring, so I don't mind giving some hints where needed.
 
 ### Reflections
 
-Writing this article reminded me of two important lessons that I sometimes forget, even to this day.
+Writing this article reminded me of two lessons that I sometimes forget, even to this day.
 
 The first lesson is that you can't judge the complexity of something by simply scratching its surface. When I saw this code posted to ruby-talk back in 2004, even though I was a newbie at the time, I could have figured it out if I only took a bit of time to study the topics that were being discussed. But since I saw a bunch of obscure binary data in the shape of a Christmas tree being passed to `eval()`, I judged the snippet as being too complicated for me, appreciated it for its magic, and moved on. That sort of lack of self-confidence can really prevent you from stumbling upon interesting new ideas, tools, and techniques.
 
-The second lesson is that hacking doesn't always have to be SERIOUS BUSINESS. Because I'm working on things I feel are super important most of the time, it's easy for me to forget to be playful and generally curious. Sometimes I feel like I'm too busy to do something just for the joy of the hack. and that worries me a bit. Writing this article reminded that I should resist this temptation, and make more time and space in my life for playful discovery, because it is a great way to learn and have fun at the same time.
+The second lesson is that hacking doesn't always have to be SERIOUS BUSINESS.
+Because I'm working on things I feel are super important most of the time, it's
+easy for me to forget to be playful and generally curious. Sometimes I feel like
+I'm too busy to do something just for the joy of the hack, and that worries me a bit. 
+Writing this article reminded that I should resist this temptation, and make more 
+time and space in my life for playful discovery, because it is a great way to learn 
+and have fun at the same time.
 
   
 > **NOTE:** This article has also been published on the Ruby Best Practices blog. There [may be additional commentary](http://blog.rubybestpractices.com/posts/gregory/045-issue-14-obfuscations.html#disqus_thread) 

@@ -31,7 +31,12 @@ Because we were only manipulating the individual objects that we created in our 
 
 While this approach didn't shield us from the risks that a future change to `PDF::Writer` could potentially break our patch in Ruport, it did prevent any risk of global consequences. Anyone who's ever spent a day scratching their head because of some sloppy monkey patch in a third party dependency will immediately be able to see the value of this sort of isolation.
 
-The neat thing is that a similar approach can be used for core extensions as well. Rather than re-opening Ruby core classes, you can imbue individual instances with custom behavior, getting many of the benefits of monkey patching without the disadvantages. For example, suppose you want to add the `sum)()` and `average()` methods to Array. If we were monkey patching, we'd write something like this
+The neat thing is that a similar approach can be used for core extensions as
+well. Rather than re-opening Ruby core classes, you can imbue individual
+instances with custom behavior, getting many of the benefits of monkey patching
+without the disadvantages. For example, suppose you want to add the `sum)()` and
+`average()` methods to Array. If we were monkey patching, we'd write something
+like the following code:
 
 ```ruby
 class Array
@@ -70,7 +75,11 @@ obj.average #=> 4
 
 By explicitly mixing in the `ArrayMathHelpers` module, we isolate our changes just to the objects we've created ourselves. With slight modification, this technique can also be used with objects passed into functions, typically by making a copy of the object before working on it.
 
-An interesting thing about this approach is that since the modules mixed into an instance of an object are looked up before the methods defined by the object's class, you can actually use this technique for modifying existing behavior of an object as well. The example below demonstrates modifying `<<` on strings so that it allows appending arbitrary objects to a string through coercion.
+Because modules mixed into an instance of an object are looked up before 
+the methods defined by its class, 
+you can actually use this technique for modifying existing behavior of an object as well. 
+The example below demonstrates modifying `<<` on strings so that it allows appending 
+arbitrary objects to a string through coercion.
 
 ```ruby
 module LooseStringAppend
@@ -127,7 +136,8 @@ add.rb		project.rb	rewind.rb	status.rb commit.rb push.rb
 staged.rb	stop.rb drop.rb	reset.rb start.rb
 ```
 
-As you might expect, start.rb defines the start command. Here's what the source for it looks like.
+As you might expect, start.rb defines the start command. Here's what its source
+looks like:
 
 ```ruby
 Turbine::Application.extension(:start_command) do
@@ -143,7 +153,11 @@ Turbine::Application.extension(:start_command) do
 end
 ```
 
-You'll notice that all our commands are essentially direct mappings to method calls, which are responsible for doing all the work. While I've significantly simplified the following `Turbine::Application` definition to remove some domain specific callbacks and things like options parsing, you can see the basic harness which registers these commands in the code below.
+You'll notice that all our commands are direct mappings to method
+calls, which are responsible for doing all the work. While I've simplified the
+following definition to remove some domain specific callbacks and options 
+parsing, the following example shows the basic harness which registers 
+Turbine's commands:
 
 ```ruby
 module Turbine
@@ -169,7 +183,12 @@ module Turbine
 end
 ```
 
-From this, we see that `Turbine::Application` stores a Hash of anonymous modules which are created on the fly whenever the `extension()` is called. The interesting thing about this design is that the commands aren't applied globally to `Turbine::Application`, but instead, are mixed in at the individual instance level. The interesting thing about this approach is that it allows us to selectively disable features, or completely replace them with alternative implementations.
+From this, we see that `Turbine::Application` stores a Hash of anonymous modules
+which are created on the fly whenever the `extension()` is called. The
+interesting thing about this design is that the commands aren't applied globally
+to `Turbine::Application`, but instead, are mixed in at the instance level. This
+approach allows us to selectively disable features, or completely replace them 
+with alternative implementations.
 
 For example, consider a custom command that gets loaded after the standard commands, which is implemented like this:
 

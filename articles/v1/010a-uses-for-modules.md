@@ -30,7 +30,11 @@ $ irb -m
 => 1.0
 ```
 
-In the above example, if `sin()` were implemented by simply defining the method directly on the `Math` module, there would be no way to mix it into anything. While sometimes it might make sense to force a module to never be used as a mixin, that use case is rare, and so very little is gained by directly defining methods on modules rather than using the `extend self` technique.
+In the above example, if `sin()` were implemented by defining the method
+directly on the `Math` module, there would be no way to mix it into anything.
+While sometimes it might make sense to force a module to never be used as a
+mixin, that use case is rare, and so little is gained by defining methods on
+modules rather than using the `extend self` technique.
 
 ### Using `module_function`
 
@@ -46,7 +50,10 @@ module Greeter
 end
 ```
 
-This code allows the direct calling of `Greeter.hello`, and does not prevent `Greeter` from being mixed into other objects. It also has a neat alternative syntax that allows you to selectively choose certain methods to be module functions while leaving others accessible via mixin only.
+This code allows the direct calling of `Greeter.hello`, and does not prevent
+`Greeter` from being mixed into other objects. The `module_function` approach
+also allows you to choose certain methods to be module functions while 
+leaving others accessible via mixin only:
 
 ```ruby
 module Greeter

@@ -8,11 +8,15 @@ Assuming you're now familiar with the general idea behind the game, I'll walk yo
 
 After running through a few ideas, I settled on a falling blocks game as a good example of a problem that's too big to be tackled in a single sitting, but easy enough to make some quick progress on.
 
-The next step for me was to come up with a target set of requirements for my prototype. To prevent the possibilities from seeming endless, I try to set a time limit up front to make this decision making process easier. I find that anywhere from an hour to half a day can get you far in Ruby, so I settled on trying to come up with something I felt I could build within an hour or two.
+The next step for me was to come up with a target set of requirements for my
+prototype. To prevent the possibilities from seeming endless, I had to set a
+time limit up front to make this decision making process easier. Because 
+very small  chunks of focused effort can get you far in Ruby, I settled on
+coming up with something I felt I could build within an hour or two.
 
 I knew right away this meant that I wasn't going to make an interactive demo. Synchronizing user input and screen output is something that may be easy for folks who do it regularly, but my concurrency knowledge is very limited, and I'd risk spending several hours on that side of things and coming up empty if I went down that path. Fortunately, even without an event loop, there are still a lot of options for building a convincing demo.
 
-In my initial optimism, I thought what I'd like to be able to do is place a piece on the screen, and then let gravity take over, correctly eliminating any completed lines as it fell into place. But this would require me to implement collision detection, something I didn't want to tackle right away.
+In my initial optimism, I thought what I'd like to be able to do is place a piece on the screen, and then let gravity take over, eliminating any completed lines as it fell into place. But this would require me to implement collision detection, something I didn't want to tackle right away.
 
 Eventually, I came up with the idea of just implementing the action that happens when a piece collides with the junk on the grid. This process involved turning the active piece into inactive junk, and then removing any completed rows from the grid. This is something that I felt fit within the range of what I could do within an hour or two, so I decided to sleep on it and see if any unknowns bubbled up to the surface.
 
@@ -136,7 +140,7 @@ canvas.paint([9,2], "|")
 puts canvas 
 ```
 
-While I use a few loops for convenience, it's easy to see that this code does little more than put symbols on a plain text grid at the specified (x,y) coordinates. Once `FallingBlocks::Canvas` is implemented, we'd expect the following output from this example:
+While I use a few loops for convenience, it's easy to see that this code does little more than put symbols on a text grid at the specified (x,y) coordinates. Once `FallingBlocks::Canvas` is implemented, we'd expect the following output from this example:
 
 ```
 ==========
@@ -186,7 +190,7 @@ module FallingBlocks
 end
 ```
 
-However, things get a little more hairy once we've plucked this low hanging fruit. So far, we've built a tool for painting the picture of what's going on, but that doesn't tell us anything about the underlying structure. This is a good time to start thinking about what Tetris pieces actually are.
+However, things get a little more hairy once we've plucked this low hanging fruit. So far, we've built a tool for painting the picture of what's going on, but that doesn't tell us anything about the underlying structure. This is a good time to start thinking about what Tetris pieces are.
 
 While a full implementation of the game would require implementing rotations and movement, our prototype looks at pieces frozen in time. This means that a piece is really just represented by a collection of points. If we define each piece based on an origin of [0,0], we end up with something like this for a vertical line:
 
@@ -232,7 +236,9 @@ end
 
 As I was writing this code, I stopped for a moment and considered that this logic, as well as the logic written earlier that manipulates (x,y) coordinates to fit inside a row-major data structure are the sort of things I really like to write unit tests for. There is nothing particularly tricky about this code, but the lack of tests makes it harder to see what's going on at a glance. Still, this sort of tension is normal when prototyping, and at this point I wasn't even 30 minutes into working on the problem, so I let the feeling pass.
 
-The next step was to paint these pieces onto the canvas, and I decide to start with their absolute coordinates to sanity check my shape definitions. The following example outlines the behavior I'd expect.
+The next step was to paint these pieces onto the canvas, and I decided to start
+with their absolute coordinates to verify my shape definitions. The following example 
+outlines the behavior I had expected.
 
 ```ruby
 canvas = FallingBlocks::Canvas.new
@@ -347,7 +353,11 @@ class Piece
 end
 ```
 
-While this mapping isn't terribly complex, it's yet another point where I was thinking 'gee, I should really be writing tests', and a couple subtle bugs that cropped up while I was writing this confirmed my gut feeling. But with the light visible at the end of the tunnel, I decided to press on by writing an example that'd unify piece objects with the junk left on the grid from previous moves.
+While this mapping isn't very complex, it's yet another point where I was
+thinking 'gee, I should be writing tests', and a couple subtle bugs that
+cropped up while implementing it confirmed my gut feeling. But with the light
+visible at the end of the tunnel, I wrote an example to unify piece objects 
+with the junk left on the grid from previous moves.
 
 ```ruby
 game = FallingBlocks::Game.new
