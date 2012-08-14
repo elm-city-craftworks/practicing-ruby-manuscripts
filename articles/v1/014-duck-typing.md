@@ -8,7 +8,9 @@ While duck typing is possible in many other languages, Ruby is designed from the
 
 ### Type Checking Techniques
 
-There are basically three ways to do type checking in Ruby, two of which are a form of duck typing, and one that is not. Here's an example of the approach that does *not* involve duck typing.
+There are three common ways to do type checking in Ruby, two of which involve
+duck typing, and one that does not. Here's an example of the approach 
+that does *not* involve duck typing.
 
 ```ruby
 def read_data(source)
@@ -21,7 +23,10 @@ def read_data(source)
 end
 ```
 
-Odds are if you've been coding Ruby for a while, you've either read or written some code that did type checking in this fashion. Ruby's case statement is very powerful, and makes this sort of logic easy to write. Our `read_data()` function will work just fine under the common scenarios shown below.
+If you've been working with Ruby for a while, you've probably written code that
+did type checking in this fashion. Ruby's case statement is powerful, and
+makes this sort of logic easy to write. Our `read_data()` function works as
+expected in the following common scenarios:
 
 ```ruby
 filename = "foo.txt"
@@ -34,7 +39,9 @@ read_data(input) #=> reads the contents of foo.txt via
                  #   the passed in file handle
 ```
   
-But things begin to fall apart a bit when we decide we'd like `read_data()` to work with a `Tempfile`, or with a `StringIO` object, or perhaps with a mock object we've defined in our tests. We have managed to bake into our logic the assumption that the input is always either a descendent of `String` or a descendent of `IO`. The purpose of duck typing is to remove these restrictions by focusing only on the messages that are being passed back and forth between objects rather than what class they belong to. The code below demonstrates one way you can do that.
+But things begin to fall apart a bit when we decide we'd like `read_data()` to
+work with a `Tempfile`, or with a `StringIO` object, or perhaps with a mock
+object we've defined in our tests. We have baked into our logic the assumption that the input is always either a descendent of `String` or a descendent of `IO`. The purpose of duck typing is to remove these restrictions by focusing only on the messages that are being passed back and forth between objects rather than what class they belong to. The code below demonstrates one way you can do that.
 
 ```ruby
 def read_data(source)
@@ -44,7 +51,10 @@ def read_data(source)
 end
 ```
 
-With this modification, our method expects far less of its input. The passed in object simply needs to implement either a meaningful `read()` or `to_str()` method. In addition to being backwards compatible with our non-duck-typed code, this new approach gives us access to the full range of things we were missing: `StringIO`, `Tempfile`, mock objects for testing, and any user defined objects that are either IO-like or String-like but not a descendent of either.
+With this modification, our method expects far less of its input. The passed in
+object simply needs to implement either a meaningful `read()` or `to_str()`
+method. In addition to being backwards compatible with our non-duck-typed code,
+this new approach gives us access to many useful standin objects, including: `StringIO`, `Tempfile`, mock objects for testing, and any user defined objects that are either IO-like or String-like but not a descendent of either.
 
 However, the following contrived example illustrates a final corner case that calls for a bit of extreme duck typing to resolve. Try to spot the problem before reading about how to solve it.
 
@@ -103,11 +113,18 @@ def read_data(source)
 end
 ```
 
-With this final version, we preserve all the benefits of the previous duck typing example, but we can work with objects that have dishonest `respond_to?()` methods. Unfortunately, the cost for such flexibility includes code that is a bit less pleasant to read and is almost certainly going to run slower than either of our previous implementations. Using the exception system for control flow doesn't come cheap, even if theoretically this is the most 'pure' form of type checking we can do.
+With this final version, we preserve all the benefits of the previous duck
+typing example, but we can work with objects that have dishonest `respond_to?()`
+methods. Unfortunately, the cost for such flexibility includes code that is less
+pleasant to read and is almost certainly going to run slower than either of our
+previous implementations. Using the exception system for control flow isn't cheap, 
+even if this is the most 'pure' form of type checking we can do.
 
 While we've talked about the benefits and drawbacks of each of these approaches, I haven't given any direct advice on whether one way of doing type checking is better than the others, simply because there is no simple answer to that question.
 
-I will try to paint a clearer picture in the next article by showing several realistic examples of why duck typing can come in handy. Until then, I'd like to leave you with a few things to think about.
+I will paint a clearer picture in the next article by showing several
+realistic examples of why duck typing can come in handy. Until then, I will
+leave you with a few things to think about.
 
 ### Questions / Study Topics
 
@@ -121,7 +138,7 @@ I will try to paint a clearer picture in the next article by showing several rea
 
 * Share a bit of code (either your own or from a OSS project you like) that you feel uses duck typing effectively.
 
-Feel free to leave a response in the comments section below if any of the above topics interest you.
+Feel free to leave a comment below if any of the above topics interest you.
 
   
 > **NOTE:** This article has also been published on the Ruby Best Practices blog. There [may be additional commentary](http://blog.rubybestpractices.com/posts/gregory/046-issue-14-duck-typing.html#disqus_thread) 

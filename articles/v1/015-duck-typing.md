@@ -2,7 +2,11 @@ Today, I've got a handful of neat examples to share, each which demonstrates an 
 
 ### Type Coercion, Ruby-style
 
-Many dynamically typed languages that offer both integer and floating point arithmetic are smart about doing the right thing based on whether or not any floats are used in a given expression. While I assume Ruby's behavior is common knowledge here, the following example demonstrates what I've just described.
+Many dynamically typed languages that offer both integer and floating point
+arithmetic are smart about doing the right thing based on whether or not any
+floats are used in a given expression. While I assume that you are already 
+familiar with Ruby's behavior, the following example demonstrates what 
+I've just described.
 
 ```ruby
 >> 3/2
@@ -75,7 +79,7 @@ class BinaryInteger
 end
 ```
 
-While it can be a bit tricky to puzzle through how `coerce()` should work, since you can't know in advance what the calling object will be, it is certainly a whole lot more dynamic than enforcing class based typing. Getting in the practice of thinking in terms of the interactions between the objects in your project rather than their static definitions can lead to some very good design insights.
+While it can be tricky to puzzle through how `coerce()` should work, since you can't know in advance what the calling object will be, it is a lot more dynamic than enforcing class based typing. Getting in the practice of thinking in terms of the interactions between the objects in your project rather than their static definitions can lead to some very good design insights.
 
 In addition to the `coerce()` method for arithmetic, Ruby uses a whole score of other coercion hooks, including `to_int`, `to_str`, and `to_ary`. These methods are called on the arguments passed to a number of `Fixnum`, `String`, and `Array` methods. The neat thing is that there is no strict requirement that these methods actually return `Fixnum`, `String`, or `Array` objects, as long as they act close enough to the real thing where it counts (i.e. for whatever messages that get sent to them).
 
@@ -87,7 +91,7 @@ We'll now take a look at a pair of examples from the wild, one from my own proje
 
 ### Duck typing to avoid scope creep
 
-The first example of duck typing in actual Ruby projects that I want to share is actually quite similar to the contrived `read_data()` example I shared on Tuesday. Today, rather than showing you the usage code first, I want you to take a look at the implementation and try to spot the usage of duck typing and guess at what it gains us before reading on..
+The first example of duck typing in actual Ruby projects that I want to share is actually quite similar to the contrived `read_data()` example I shared on Tuesday. Today, rather than showing you the usage code first, I want you to take a look at the implementation and try to spot the usage of duck typing and guess at what it gains us before reading on.
 
 ```ruby
 def image(file, options={})
@@ -118,7 +122,9 @@ Prawn::Document.generate("remote_images.pdf") do
 end
 ```
 
-Through the use of `open-uri`, our duck-typed image method provides a pretty nice way of rendering remote content! While this might not have been an easy feature to guess without knowing a bit about Prawn, it does represent the elegant compromise that such an implementation affords us. Adding support for remote images was something that our users often asked for, but we wanted to avoid giving people the impression that Prawn was web-aware, and didn't want to support a special case for this sort of logic, as it'd require either an API change or an ugly hack to try to determine whether the provided string was either a URI or a file name.
+Through the use of `open-uri`, our duck-typed image method provides a nice way
+of rendering remote content! While this might not have been an easy feature to
+guess without knowing a bit about Prawn, it represents the elegant compromise that such an implementation affords us. Adding support for remote images was something that our users often asked for, but we wanted to avoid giving people the impression that Prawn was web-aware, and didn't want to support a special case for this sort of logic, as it'd require either an API change or an ugly hack to determine whether the provided string was either a URI or a file name.
 
 The approach of accepting anything with a `read()` method combined with Ruby's standard library `open-uri` made for something that is easy to document and easy for our users to remember. While a simple hack, I was very satisfied with how this design turned out because it seemed to mostly eliminate the problem for our users while simultaneously avoiding some overly complex implementation code that might be brittle and hard to test.
 
@@ -139,11 +145,20 @@ end
 User.with_email("gregory.t.brown@gmail.com").count #=> 1
 ```
 
-The block syntax is nice and clean for simple things, but can get a bit unwieldy for complex logic. For example, if we wanted to throw in validations for the entered email addresses, our block would end up getting a bit ugly unless we implemented some private class methods to help out. If you're thinking that private class methods sound weird and might be a bit of a code smell, they are, and that's one indication that this API needs to be a bit more flexible than what it is.
+The block syntax is nice and clean for simple things, but can get a bit unwieldy for complex logic. For example, if we wanted to throw in validations for the entered email addresses, our block would end up getting a bit ugly unless we implemented some private class methods to help out. If you're thinking that private class methods sound weird and might be a bit of a code smell, they are, and that's one indication that this API needs to be more flexible than what it is.
 
-That said, Aaron was on a performance tuning mission, not an API overhaul. The problem he found with the API was initially not an aesthetic one but an implementation detail: Executing code stored in a `Proc` object is considerably more computationally expensive than an ordinary method call. While this isn't likely to be a bottleneck in ordinary situations, it is common for high traffic Rails applications to really hammer on their scopes, since they're used for filtering the data that is presented to users. The key insight Aaron had was that making some other object quack like a `Proc` is no more complicated than implementing a `call()` method.
+That said, Aaron was on a performance tuning mission, not an API overhaul. The
+problem he found with the API was initially not an aesthetic one but an
+implementation detail: Executing code stored in a `Proc` object is considerably
+more computationally expensive than an ordinary method call. While this isn't
+likely to be a bottleneck in ordinary situations, it is common for high traffic
+Rails applications to really hammer on their scopes, since they're used for
+filtering the data that is presented to users. The key insight Aaron had was
+that making some other object quack like a `Proc` is as easy as implementing 
+a `call()` method.
 
-Shown below is the one line patch that changes the behavior of `scope()` to no longer explicitly expect a `Proc` object and allows the use of anything that implements a meaningful `call()` method.
+Shown below is the one line patch that changes the behavior of `scope()` to
+allow the use of any object that implements a meaningful `call()` method:
 
 ```ruby
 # BEFORE
@@ -180,7 +195,8 @@ end
 
 The nice thing about this patch is that nothing is lost by doing things this way. Often times, when moving from explicit class checking to behavior based checks, the only overhead is that debugging can be a bit more complicated since there is no easy way to verify that an object implementing `call()` actually does so in a sensible way. However, with adequate unit tests and decent documentation, this kind of fuzziness is rarely a big enough problem in practical applications to outweigh the benefits that come along with utilizing this technique.
 
-Aside from the superficial improvements that come from converting `Proc` calls to method calls, the general approach behind writing duck typed interfaces tends to increase the potential for further performance improvements. When code is written to explicitly avoid assuming too much about how objects are implemented, it is easy to swap out objects that are more performant in edge cases, or implement aggressive caching where appropriate. While it may seem counterintuitive, the same dynamic nature that makes Ruby slow at the implementation level makes a wide range of algorithmic improvements possible. We unfortunately won't be exploring this topic today, but it would be a good topic for a future issue.
+Aside from the superficial improvements that come from converting `Proc` calls
+to method calls, the general approach of writing duck typed interfaces tends to increase the potential for further performance improvements. When code is written to explicitly avoid assuming too much about how objects are implemented, it is easy to swap out objects that are more performant in edge cases, or implement aggressive caching where appropriate. While it may seem counterintuitive, the same dynamic nature that makes Ruby slow at the implementation level makes a wide range of algorithmic improvements possible. We unfortunately won't be exploring this topic today, but it would be a good topic for a future issue.
 
   
 > **NOTE:** This article has also been published on the Ruby Best Practices blog. There [may be additional commentary](http://blog.rubybestpractices.com/posts/gregory/047-issue-15-duck-typing-2.html#disqus_thread) 
