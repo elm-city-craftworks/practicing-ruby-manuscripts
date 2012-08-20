@@ -73,6 +73,7 @@ Now that you've seen what a bitmap looks like in its raw form, I can demonstrate
 ```ruby
 bmp = BMP::Writer.new(2,2)
 
+# NOTE: Bitmap encodes pixels in BGR format, not RGB!
 bmp[0,0] = "ff0000"
 bmp[1,0] = "00ff00"
 bmp[0,1] = "0000ff"
@@ -212,7 +213,7 @@ class BMP
 
     def pixel_binstring(rgb_string)
       raise ArgumentError unless rgb_string =~ /\A\h{6}\z/
-      [rgb_string].pack("h6")
+      [rgb_string].pack("H6")
     end
 
     def row_padding
@@ -243,15 +244,15 @@ While the padding code is definitely the most interesting aspect of the pixel ar
 ```ruby
 def pixel_binstring(rgb_string)
   raise ArgumentError unless rgb_string =~ /\A\h{6}\z/
-  [rgb_string].pack("h6")
+  [rgb_string].pack("H6")
 end
 ```
 
 This is the method that converts the values we set in the pixel array via lines like `bmp[0,0] = "ff0000"` into actual binary sequences. It starts by matching the string with a regex to ensure that the input string is a valid sequence of 6 hexadecimal digits. If the validation succeeds, it then packs those values into a binary sequence, creating a string with three bytes in it. The example below should make it clear what is going on here:
 
 ```
->> ["ffa0ff"].pack("h6").bytes.to_a
-=> [255, 10, 255]
+>> ["ffa0ff"].pack("H6").bytes.to_a
+=> [255, 160, 255]
 ```
 
 This makes it possible to specify color values directly in hexadecimal strings and then convert them to their numeric value just before they get written to the file.
@@ -385,7 +386,7 @@ class BMP
 
       (@height-1).downto(0) do |y|
         0.upto(@width - 1) do |x|
-          @pixels[y][x] = file.read(3).unpack("h6").first
+          @pixels[y][x] = file.read(3).unpack("H6").first
         end
         advance_to_next_row(file)
       end
