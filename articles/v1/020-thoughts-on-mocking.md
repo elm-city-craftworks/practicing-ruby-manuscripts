@@ -14,7 +14,11 @@ When I think back on my testing habits, I find that virtually all of my use of m
  * Testing code which would involve a large amount of non-reusable setup and fixture data if you didn't mock at a high level.
  * Testing code which relies on features which are particularly computationally expensive.
 
-Each of these scenarios has their caveats, but odds are, most moderate to large size projects I work on hit at least one of them, and it isn't entirely uncommon to deal with all three of these issues simultaneously. That alone tells me that having a good understanding of how to use mocks is a key part of TDD I'll now share some examples that hopefully help drive that point home.
+Each of these scenarios has their caveats, but odds are, most moderate to large
+size projects I work on hit at least one of them, and it isn't rare
+to deal with all three of these issues simultaneously. That alone tells me that
+having a good understanding of how to use mocks is a key part of TDD. I'll now
+share some examples that hopefully help drive that point home.
 
 <b>Isolation from external resources</b>
 
@@ -37,7 +41,11 @@ test "trip must be able to detect an invalid stop" do
 end 
 ```
 
-If you guessed that the `expect_an_invalid_stop` method introduces a mock into these tests, you were right! While it might look a bit like magic on a first glance, I usually try to separate all but the most trivial mock logic into its own helper methods to make the tests easier to read and maintain.Below you can see what `expect_an_invalid_stop` actually does.
+If you guessed that the `expect_an_invalid_stop` method introduces a mock into
+these tests, you were right! While it might look a bit like magic on a first
+glance, I usually try to separate all but the most trivial mock logic into its
+own helper methods to make the tests easier to maintain. Here's what
+`expect_an_invalid_stop` actually does:
 
 ```ruby
 def expect_an_invalid_stop
@@ -47,7 +55,7 @@ def expect_an_invalid_stop
 end
 ```
 
-To tie everything together, we should now take a look at the implementation code that these tests run against. It is a simple module that gets mixed into the stops array when a new `Trip` is created.
+We can now take a look at the implementation code that these tests run against. It is a simple module that gets mixed into the stops array when a new `Trip` is created.
 
 ```ruby
 module StopValidation
@@ -83,7 +91,8 @@ test "retreive a valid US postal area" do
 end
 ```
 
-The mocking actually happens in `expect_postal_area_search`, which is implemented via the code below.
+The mocking actually happens in `expect_postal_area_search`, which is shown
+below:
 
 ```ruby
 def expect_postal_area_search(zip)
@@ -118,7 +127,7 @@ end
 
 I won't bother tracing the longish execution path that lies on either side of this helper method, but the key takeaway here is that we're able to avoid to skip two layers of complexity by mocking out our call to `PostalArea` and stubbing out the actual geometry object that is associated with that `PostalArea`.
 
-We could have loaded fixture data into our testing environment which actually provided the relevant geospacial data to perform the sort of search we needed for this feature, but doing so would certainly be more complicated than the two simple lines we used to create our mock and stub.
+We could have loaded fixture data into our testing environment which had the relevant geospacial data to perform the sort of search we needed for this feature, but doing so would certainly be more complicated than the two simple lines we used to create our mock and stub.
 
 Part of the reason mocks work out well here is that they allow you to focus on the behavior of `GeoRegion` rather than its implementation details. Even though under the hood a bunch of complex object manipulation is going on, we only really care about a very narrow set of functionality that `GeoRegion`'s adds as metadata to the geometry objects looked up through its search methods. If we had to actually populate the database with geometry data and concern ourselves with the messy relationships between these objects, our tests would be far less clear.
 
@@ -198,12 +207,12 @@ The three types of scenarios I've covered so far pretty much completely describe
 
 ### Bad uses for mocks
 
-The two worst uses of mocks I know of are often listed as the secret sauce that makes them so useful.
+Two very popular use cases for mocks should actually be considered harmful:
 
 * Using mocks for complete isolation of internal dependencies
 * Using mocks as contracts for unwritten objects
 
-Now to be sure, there are fairly strong arguments for each of these ideas, Fowler alone goes to great lengths making the case for them, and he is a moderate on these issues. But I'd argue the line of thinking is really geared towards languages that punish users from creating lots of objects with simple APIs connecting them together, such as Java. Let's take a look at some Ruby examples so that we can consider that point.
+To be sure, there are fairly strong arguments for each of these ideas, Fowler alone goes to great lengths making the case for them, and he is a moderate on these issues. But I'd argue the line of thinking is really geared towards languages that punish users from creating lots of objects with simple APIs connecting them together, such as Java. Let's take a look at some Ruby examples so that we can consider that point.
 
 <b>Using mocks for complete isolation of internal dependencies</b>
 
@@ -375,7 +384,7 @@ satisfied expectations:
   #<Mock:0x7ff71166aac0>.name(any_parameters)
 ```
 
-So here we see the knife cuts both ways. While it's true that our mocked code doesn't need to worry about the actual implementations of anything except the object under test, it sure does tightly bind to the interface, even when changes to those interfaces don't affect the object under test.
+So here we see the knife cuts both ways. While it's true that our mocked code doesn't need to worry about the implementations of anything except the object under test, it does tightly bind to the interface, even when changes to those interfaces don't affect the object under test.
 
 This allows us to make the same argument that mockists make about cascading errors, from the other side of the fence. As projects grow bigger, the amount of red tests due to brittle mock objects grows larger and larger, making it harder to see what is actually broken and what needs to be changed. But unlike the problem of noisy directly tested objects, these sort of failures only indicate a problem with the tests, not the code.
 
@@ -395,11 +404,12 @@ The examples I've shown here might be a bit biased towards demonstrating my argu
 
 We've simultaneously shown in this article that mock objects are both really damn useful and ridiculously annoying at the same time. Personally, I tend to shy away from tooling that requires you to swallow a large amount of dogma and a boatload of theory before you can even make use of it, and that is the main reason why I'm concerned about the whole mockist approach to things. From what I've seen, while a stereotypical _classicist_ is hard to come by, these _mockist_ folks that Fowler describes do exist and in my opinion, do more harm than good in getting folks to write clear, easy to understand Ruby code.
 
-Mocking frameworks are big guns, and should be treated as such. They can be lifesavers in times where all your other options suck, but can cause you to pull your hair out if you use them inappropriately.
+Mocking frameworks are big guns, and should be treated as such. They can be life
+savers when used in moderation, but can make you pull your hair out if you use them inappropriately.
 
 In summary, it's a bad idea to swallow bad tasting medicine with the abstract promise that it will be better for you in the end. If you can see clear benefits from the use of mocks and have weighed them out on a case by case basis against your other options, you should be fine. But if you are mostly using them because the RSpec team tells you to, you're basically screwed :)
 
-My final disclaimer about what I've said here is that it is entirely based on my own experiences. You've probably worked on different problems in different environments than I have, and I'd love to know how those experiences have influenced your own thoughts on mocking. So, what do you think?
+My final disclaimer about what I've said here is that it is entirely based on my own experiences. You've worked on different problems in different environments than I have, and I'd love to know how those experiences have influenced your own thoughts on mocking.
   
 > **NOTE:** This article has also been published on the Ruby Best Practices blog. There [may be additional commentary](http://blog.rubybestpractices.com/posts/gregory/052-issue-20-thoughts-on-mocking.html#disqus_thread) 
 over there worth taking a look at.
