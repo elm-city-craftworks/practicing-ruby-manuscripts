@@ -175,7 +175,7 @@ Prepending any constant with `::` will force Ruby to skip the nested namespaces 
 
 In general, having to use absolute lookups may be a sign that there is an unnecessary name conflict within your application. But if upon investigation you find names that inheritently collide with one another, you can use this tool to avoid any ambiguity in your code.
 
-While we've mostly covered the mechanics of namespacing, all this talk about `::` compells me to share a cautionary tale of mass cargoculting before we wrap up for today. Please bear with me as I stroke my beard for a moment.
+While we've mostly covered the mechanics of namespacing, all this talk about `::` compels me to share a cautionary tale of mass cargoculting before we wrap up for today. Please bear with me as I stroke my beard for a moment.
 
 ### Abusing the Constant Lookup Operator (`::`)
 
