@@ -1,6 +1,11 @@
-In this issue and the next one, I look at several design patterns laid out by the Gang of Four and explore their relevance to modern day Ruby programming. My goal is not so much to teach the design patterns themselves, but instead give practical examples using real code so that you can consider what their strengths and weaknesses are. 
+In this issue and the next one, I look at several design patterns laid out by
+the Gang of Four and explore their relevance to modern day Ruby programming. My
+goal is not so much to teach the design patterns themselves, but instead give
+practical examples using real code so that you can consider what their strengths
+and weaknesses are.
 
-In this article, I focus on the creational design patterns, all of which have to do with instantiating new objects. They are listed below in no particular order:
+In this article, I focus on the creational design patterns, all of which have to
+do with instantiating new objects. They are listed below in no particular order:
 
   * Singleton
   * Multiton
@@ -9,15 +14,30 @@ In this article, I focus on the creational design patterns, all of which have to
   * Builder
   * Prototype  
 
-An important thing to keep in mind is that while the original GoF book was written with C++ and Smalltalk examples, none of the patterns were written with Ruby's semantics in mind. This makes it necessary to use a little poetic license to explore how these patterns apply in Ruby. That having been said, the examples we'll look at attempt to preserve the spirit of the patterns they implement even if they're not semantically identical.
+An important thing to keep in mind is that while the original GoF book was
+written with C++ and Smalltalk examples, none of the patterns were written with
+Ruby's semantics in mind. This makes it necessary to use a little poetic license
+to explore how these patterns apply in Ruby. That having been said, the examples
+we'll look at attempt to preserve the spirit of the patterns they implement even
+if they're not semantically identical.
 
 ### Singleton
 
-<i>UPDATE 2011-12-20: Be sure to check out what [Practicing Ruby 2.8](http://practicingruby.com/articles/shared/jleygxejeopq) has to say about implementing Singleton pattern in Ruby. My feelings on this have changed over time</i>
+<i>UPDATE 2011-12-20: Be sure to check out what [Practicing Ruby
+2.8](http://practicingruby.com/articles/shared/jleygxejeopq) has to say about
+implementing Singleton pattern in Ruby. My feelings on this have changed over
+time</i>
 
-The [Singleton pattern](http://en.wikipedia.org/wiki/Singleton_pattern) is used in situations where a single instance of a class is all you need. Singleton objects are meant provide an effective way of organizing global state and behavior, such as configuration data, logging support, or other similar needs. This pattern is common enough that Ruby provides a module in its standard library that is meant to make it easier to implement.
+The [Singleton pattern](http://en.wikipedia.org/wiki/Singleton_pattern) is used
+in situations where a single instance of a class is all you need. Singleton
+objects are meant provide an effective way of organizing global state and
+behavior, such as configuration data, logging support, or other similar needs.
+This pattern is common enough that Ruby provides a module in its standard
+library that makes it easier to implement.
 
-In the code below, I've implemented a simple logger using Ruby's singleton library, which on the surface should look quite like an ordinary Ruby class definition.
+In the code below, I've implemented a simple logger using Ruby's singleton
+library, which on the surface should look quite like an ordinary Ruby class
+definition.
 
 ```ruby
 require "singleton"
@@ -72,7 +92,9 @@ logger.write("log.txt")
 
 The class method `instance()` gets added by the Singleton mixin, and takes responsibility for initializing the SimpleLogger object. The first time this method is called, an instance of SimpleLogger is created, and initialize gets called as usual. Each subsequent call refers to that exact instance, preventing additional instances of this class from being created.
 
-At this point, you might be wondering what the advantage of this approach is over just using ordinary class definitions and then assigning an object to a global variable, such as in the code below.
+At this point, you might be wondering what the advantage of this approach is
+over using ordinary class definitions and global variables, such as in the code
+below:
 
 ```ruby
 $LOGGER = SimpleLogger.new
@@ -122,7 +144,7 @@ SimpleLogger.info("Something you might want to know")
 SimpleLogger.write("log.txt")
 ```
 
-As an experienced Rubyist, I like to use this approach because what I end up with is truly a single object, rather than a class who's job is to provide a single instance. I also like to be able to call my singleton methods directly on that object without having to retrieve the singular instance.
+I like to use this approach because what I end up with is truly a single object, rather than a class who's job is to provide a single instance. I also like to be able to call my singleton methods directly on that object without having to retrieve the singular instance.
 
 The downside of this code, and the reason why I showed both approaches instead of just my preferred one, is that it requires a much greater amount of Ruby knowledge to actually understand how it works. Additionally, through the loss of the `initialize()` hook, you need to either do something like create a setup method that you explicitly call before any other methods, or do lazy initialization of all data as I've done in the `output()` method. These idioms are fairly common, but again, take you a bit farther away from the look and feel of an 'ordinary class definition', which may be offputting to some.
 
@@ -185,7 +207,7 @@ This basic pattern can be used any time you have a scenario in which each unique
 
 The [Factory Method pattern](http://en.wikipedia.org/wiki/Factory_method) is used for putting a layer of abstraction on top of object creation so that directly working with its constructor is no longer necessary. This process can lead to more expressive ways of building new objects, and can also allow for the creation of new objects without explicitly referencing their class.
 
-In a Mendicant University core skills course, one of our students (Carol Nichols) ran into a design issue that we were able to improve by introducing factory methods. She was building an `AdjacencyMatrix` datastructure for storing graph data, and her original API looked something like this:
+In a Mendicant University course, one of our students (Carol Nichols) ran into a design issue that we were able to improve by introducing factory methods. She was building an `AdjacencyMatrix` datastructure for storing graph data, and her original API looked like this:
 
 ```ruby
 class AdjacencyMatrix
@@ -232,9 +254,18 @@ directed_matrix   = AdjacencyMatrix.directed(data)
 
 While this code does still have its original wart intact internally, the interface that consumers interact with has been greatly improved. By making the `new()` method private at the class level, we force users to call the factory methods, and it becomes immediately clear what type of graph is being processed each time a new `AdjacencyMatrix` is constructed.
 
-This type of scenario comes up often, and the use of factory methods can be used to simplify or at least hide the complexity of constructor calls by giving an expressive name to a certain way of constructing a given object. However, sometimes factories go even farther by completely decoupling the object creation process from the class of the object being created. While I won't go into much detail about this much less common use case, we see this sort of factory very often in test code, particularly when dealing with object relational mappers in web applications.
+This type of scenario comes up often, and the use of factory methods can be used
+to simplify or at least hide the complexity of constructor calls by giving an
+expressive name to a certain way of constructing a given object. However,
+sometimes factories go even farther by completely decoupling the object creation
+process from the class of the object being created. While I won't go into much
+detail about this rare use case, we see this sort of factory very
+often in test code, particularly when dealing with object mappers in web 
+applications.
 
-The following example from `factory_girl` demonstrates how code which references no particular class at all can be used to instantiate records via an ORM framework such as ActiveRecord.
+The following example from `factory_girl` demonstrates how code which does not
+reference a particular class can be used to instantiate records 
+via ActiveRecord:
 
 ```ruby
 factory :user do
@@ -246,7 +277,11 @@ end
 FactoryGirl.build(:user) #=> an instance of the User model
 ```
 
-I won't go into the details about how this works, but it should serve as food for thought, and perhaps would be a good project to [dig into the source](https://github.com/thoughtbot/factory_girl) so that you can get a sense of the power that factory methods can have in simplifying the object creation process while making it more flexible.
+I won't elaborate on how this works, but it should serve as food for thought,
+and perhaps would be a good project to [dig into the
+source](https://github.com/thoughtbot/factory_girl) so that you can get a sense
+of how factory methods can simplify the object creation process while also making 
+it more flexible.
 
 ### Abstract Factory
 
@@ -370,7 +405,7 @@ module Fatty
 end
 ```
 
-On the surface, the bulk of this code dealing with formats looks like my Multiton example, albeit one that operates on anonymous Class objects. But instead of focusing on that detail, you should turn your attention to the `render()`, which is where the builder process comes in.
+The bulk of this code looks like my Multiton example, albeit one that operates on anonymous Class objects. But instead of focusing on that detail, you should turn your attention to the `render()`, which is where the builder process comes in.
 
 Each time render is called, a new instance of an anonymous Format subclass is created, and then customized. The params attribute is set and the render method is called to return the finally constructed object, our output data. As long as each format object that is implements all the required steps, they can be used interchangeably, which is the key feature that the Builder pattern emphasizes.
 
@@ -384,7 +419,7 @@ I've included a reference to the [Prototype pattern](http://en.wikipedia.org/wik
 
 I think what's interesting about the Prototype pattern is that it gives you a different way of looking at object oriented programming which allows you to envision an object system without needing the concept of classes. There are two languages I know of that are specifically designed to implement that kind of environment, [Self](http://en.wikipedia.org/wiki/Self_%28programming_language%29) and [Io](http://en.wikipedia.org/wiki/Io_%28programming_language%29).
 
-Because I feel well out of my depth when it comes to suggesting a good use of this pattern in Ruby, I welcome readers to submit their own ideas. Personally, I feel like this pattern just isn't a good fit for Ruby, but I could be wrong and would love to see evidence of my own ignorance! :)
+Because I feel out of my depth when it comes to suggesting a good use of this pattern in Ruby, I welcome readers to submit their own ideas. Personally, I feel like this pattern isn't a good fit for Ruby, but I could be wrong and would love to see evidence of my own ignorance!
 
 ### Reflections
 

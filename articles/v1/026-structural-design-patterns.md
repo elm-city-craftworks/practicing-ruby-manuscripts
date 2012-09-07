@@ -18,7 +18,9 @@ An [Adapter](http://en.wikipedia.org/wiki/Adapter_pattern) is used when you want
 
 Increasingly, Rubyists are finding this pattern to be useful in other settings as well. In particular, things like Intridea's [multi_json](https://github.com/intridea/multi_json) gem allow libraries and applications to be built against an abstract interface rather than requiring some particular JSON library that might conflict with other dependencies. Inspired by the ideas behind multi_json, a Mendicant University student (Mitko Kostov) built a similar adapter library for Markdown processors called [Marky](https://github.com/mytrile/marky). The base implementation is very simple, and gives us a good opportunity to look at one way to implement an Adapter in Ruby from the ground up.
 
-The basic idea is that we want to be able to use a common interface while easily configuring which backend is used under the hood. The following example shows how Marky might be used.
+The basic idea is that we want to be able to use a common interface while easily
+configuring which backend is used. The following example shows how Marky might
+be used:
 
 ```ruby  
 # using RDiscount as a backend
@@ -96,7 +98,11 @@ module Marky
 end
 ```
 
-Since all the adapters implement a `to_html()` method that share a common contract, `Marky.to_html()` will work regardless of what adapter gets loaded. The win here is that if that libraries, applications and frameworks rely on adapters rather than concrete implementations, the choice of which engine to use can be done differently in different environments.
+Since all the adapters implement a `to_html()` method that share a common
+contract, `Marky.to_html()` will work regardless of what adapter gets loaded.
+The win here is that if that libraries, applications and frameworks rely on
+adapters rather than concrete implementations, it will be easier to swap
+one engine out for another when necessary.
 
 While not every problem domain needs added level of indirection that Adapters introduce, they can come in handy when there are several competing implementations solving a common problem but you don't want to forced to choose one over the other.
 
@@ -174,7 +180,11 @@ The thing that I struggle with in this pattern is understanding what unique beha
 
 The [Composite pattern](http://en.wikipedia.org/wiki/Composite_pattern) is useful when you want to treat a group of objects as if it were a single, unified object. To explore this pattern, we can look at some experimental code I wrote for Prawn which was designed to make it possible to treat all objects drawn in the document as compositions of primitive PDF instructions. We can start with an example of rendering a curve, working from the outside in.
 
-When `curve()` is called on a Prawn drawing, the necessary PDF content is generated as a side effect and the user does not need to do anything with the return value of that method. However, if someone wanted to play with the internals, they could call `curve!()` instead and get themselves an object that implements a `to_pdf()` method, as shown in the example below.
+When `curve()` is called on a Prawn drawing, the PDF content is generated as a
+side effect and the user does not need to do anything with the return value of
+that method. However, if someone wanted to play with the internals, they could
+call `curve!()` instead and get themselves an object that implements a
+`to_pdf()` method, as in the following example:
 
 ```ruby
 chunk = canvas.curve!(:point1 => [100,100],
@@ -380,13 +390,13 @@ class HasManyAssociation < BasicObject
 end
 ```
 
-Without looking at the source, I'm almost sure that Rails does something similar to this, because doing some_association.class returns Array rather than the name of the proxy object. This is the only noticeable difference on the surface between this approach and the DelegateClass approach.
+Without looking at the source, I'm almost sure that Rails does something similar to this, because doing some_association.class returns Array rather than the name of the proxy object. This is the only noticeable difference between this approach and the DelegateClass approach.
 
 Personally, I've written proxies in both ways, and I tend to prefer the `DelegateClass()` approach slightly, simply because it's more explicit and doesn't require me to explicitly define a `method_missing()` hook. But on the other hand, we can see that rolling your own proxy implementation is trivial in Ruby, and some may prefer the self contained nature of doing the delegation work yourself. It'd be interesting to hear what readers have to say on this topic, so please feel free to post to the mailing list if you prefer one approach over the other.
 
 ### Decorator
 
-While there is a more clear distinction between a [Decorator](http://en.wikipedia.org/wiki/Decorator_pattern) and a Proxy in static languages, in Ruby the two concepts almost merge, except that a Decorator is used almost exclusively for the purpose of adding / extending behavior of a target object, and a Proxy is a more general concept.
+While there is a clear distinction between a [Decorator](http://en.wikipedia.org/wiki/Decorator_pattern) and a Proxy in static languages, in Ruby the two concepts almost merge, except that a Decorator is used for the purpose of adding / extending behavior of a target object, and a Proxy is a more general concept.
 
 Since I've already written up a cool example of using decorators on this blog, I think what I'll do is point you over there in the interest of keeping this article from being even more incredibly long than it already is. Check out the [Decorator Delegator Disco](http://blog.rubybestpractices.com/posts/gregory/008-decorator-delegator-disco.html) if you want to see some interesting code samples that implement this pattern.
 
