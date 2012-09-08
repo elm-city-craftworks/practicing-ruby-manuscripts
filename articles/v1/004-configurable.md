@@ -1,8 +1,15 @@
-In [Issue #3](http://practicingruby.com/articles/31), we discussed the numerous downsides of mixing configuration code with application code. We then went on to discuss how using YAML files can eliminate many of those problems. But since nothing is perfect, we're back again today to discuss some of the downsides of YAML based configurations as well as some alternative approaches that have their own ups and downs. We'll also touch on some practices that should be followed regardless of how you implement your configuration systems.
+In [Issue #3](http://practicingruby.com/articles/31), we looked at the downsides
+of mixing configuration code with application code. We discussed how storing
+configuration data in YAML files can solve many of those issues, but not
+all of them. In this article, we will explore the limitations of the YAML 
+format, and then consider the tradeoffs involved in using various 
+alternative solutions.
 
 ### Dynamic Configuration
 
-Practicing Ruby reader Franklin Webber responded to some of the questions posed in Issue #3. In particular, he shared an example of YAML's aliasing functionality which allows you to reduce duplication in your configuration files.
+In response to the questions posed by Issue #3, Franklin Webber demonstrated
+how YAML's aliasing functionality can be used to reduce duplication in
+a configuration file:
 
 ```
 default: &DEFAULT
@@ -23,9 +30,18 @@ windows_default: &WIN_DEFAULT
     browser: IE
 ```
 
-In this example, the `default` and `windows_default` configurations share almost the same attributes, except that browsers differ in test mode. Franklin uses aliasing to essentially perform a hash merge on the fly in the code above, solving his duplication problem. This is a neat way to keep your YAML configurations well organized.
+In this example, the `default` and `windows_default` configurations share almost
+the same attributes, except that browsers differ in test mode. Franklin uses
+aliasing to merge the `DEFAULT` data into the `WIN_DEFAULT` entry, solving his
+duplication problem. This is a neat way to keep your YAML configurations well
+organized.
 
-But after sharing this trick, Franklin shows something that can't be done directly in YAML which illustrates where the data format breaks down. While it is possible to reference different points in the data structure, it's not possible to manipulate them, so the following concatenation example cannot work without modification:
+While Franklin shared this example of aliasing to illustrate that some dynamic
+functionality does exist within YAML, he acknowledged that the format was still
+mostly suited for static data. Even though it is possible to reference
+various entries within the data structure, they cannot be manipulated. 
+That means that the following concatenation example cannot be done in pure 
+YAML, and would require some additional processing:
 
 ```
 host:
@@ -35,7 +51,13 @@ web:
   login_url: #{name}:#{port}/login 
 ```
 
-Despite how simple this all seems, it is here that we cross the line from problems solved by a data format to those solved by programming languages. Franklin suggests that it would be possible to eval the strings to reach his goals, and Rails does almost the same thing by processing its YAML files through ERB. But once we start going down that road, we need to ask ourselves what it would take to just implement the entire configuration in pure Ruby. As you can see by the code below, the answer is 'not much'.
+This is where we cross the line from problems solved by a data format to those
+solved by programming languages. Franklin suggests that running the YAML data
+through Ruby's `eval` method is an option, which is similar to how Rails
+passes its YAML files through `ERB`. This approach would work, but once we 
+start going down that road, we need to ask what it would take to implement 
+the entire configuration in pure Ruby. As you can see in the following example, 
+the answer is 'not much':
 
 ```ruby
 module MyApp
@@ -46,7 +68,9 @@ module MyApp
 end
 ```
 
-If we drop this snippet directly into our application code, we run into all the problems that our first example had in Issue #3. But by simply breaking this module out into its own file and requiring that file, those issues are avoided.
+If we drop this snippet into our application code, we run into the same problems
+that we saw in the first example in Issue #3. But by defining this module
+in its own file and requiring that file, those issues are avoided:
 
 ```ruby
 require "config/my_app_config"
