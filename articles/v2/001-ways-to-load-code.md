@@ -1,251 +1,383 @@
 There are many ways to load Ruby code, and that has lead to confusion over the years. In this article, I will give you the backstory behind several conventions seen in the wild and share some stories about how I use those conventions in my own code.
 
-The topic of code loading breaks up naturally into two subtopics: loading code within your own project and loading code from third-party libraries. People tend to struggle more with loading code properly within their own projects than they do with loading code from third-party libraries, so that's what I'll focus on exclusively in this issue. That said, there is certainly room for a second article on dealing with external dependencies, so be sure to let me know if that interests you.
+The topic of code loading breaks up naturally into two subtopics: loading code
+within your own project and loading code from third-party libraries. People tend
+to struggle more with loading code properly within their own projects than they
+do with loading code from third-party libraries, so that's what I'll focus on
+exclusively in this issue.
 
-For now, I will focus on the basic mechanics of `load()`, `auto_load()`, `require()`, and `require_relative()`. I'll discuss how they work so you can then think about how they can be used within your own projects.
+For now, I will focus on the basic mechanics of `load()`, `auto_load()`,
+`require()`, and `require_relative()`. I'll discuss how they work so you can
+then think about how they can be used within your own projects.
 
-### Kernel#load()
+### Kernel#load
 
 Suppose we have a file called _calendar.rb_ that contains the code shown here:
 
-    class Calendar
-      def initialize(month, year)
-        @month = month
-        @year  = year
-      end
+```ruby
+class Calendar
+  def initialize(month, year)
+    @month = month
+    @year  = year
+  end
 
-      # A simple wrapper around the *nix cal command.
-      def to_s
-        IO.popen(["cal", @month.to_s, @year.to_s]) { |io| io.read }
-      end
-    end
+  # A simple wrapper around the *nix cal command.
+  def to_s
+    IO.popen(["cal", @month.to_s, @year.to_s]) { |io| io.read }
+  end
+end
 
-    puts Calendar.new(8, 2011)
+puts Calendar.new(8, 2011)
+```
 
-Given an absolute path to this file, the contents will be loaded and then executed immediately. 
+Given an absolute path to this file, the contents will be loaded and then
+executed immediately:
 
-    >> load "/Users/seacreature/devel/practicing-ruby-2/calendar.rb"
-        August 2011
-    Su Mo Tu We Th Fr Sa
-        1  2  3  4  5  6
-     7  8  9 10 11 12 13
-    14 15 16 17 18 19 20
-    21 22 23 24 25 26 27
-    28 29 30 31
+```console
+>> load "/Users/seacreature/devel/practicing-ruby-2/calendar.rb"
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+```
 
 I can also just specify a path relative to my current working directory and get the same results. That means that if _calendar.rb_ is in the same directory from which I invoked my irb session, I'm able to call `load()` in the manner shown here:
 
-    >> load "./calendar.rb"
-        August 2011
-    Su Mo Tu We Th Fr Sa
-        1  2  3  4  5  6
-     7  8  9 10 11 12 13
-    14 15 16 17 18 19 20
-    21 22 23 24 25 26 27
-    28 29 30 31
+```console
+>> load "./calendar.rb"
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+```
 
-An interesting thing about `load()` is that it does not do any checks to see whether it has already loaded a file and will happily reload and reexecute a file each time you tell it to. So, in practice, the implementation of `load()` is functionally similar to the code shown here. Go ahead and try it out if you'd like.
+An interesting thing about `load()` is that it does not do any checks to see
+whether it has already loaded a file and will happily reload and reexecute a
+file each time you tell it to. So, in practice, the implementation of `load()`
+is functionally similar to the code shown here:
 
-    def fake_load(file)
-      eval File.read(file)
-      true
-    end
+```ruby
+def fake_load(file)
+  eval File.read(file)
+  true
+end
+```
 
-The main benefit of indiscriminately reloading and reexecuting code is that you can make changes to your files and then `load()` them again within a single session without having to restart the program that's loading the code. So, for example, if we changed _calendar.rb_ to output August 2012 instead of August 2011, we could just load it again without restarting irb. But we'd also be greeted with some warnings in the process.
+The main benefit of indiscriminately reloading and reexecuting code is that you
+can make changes to your files and then `load()` them again within a single
+session without having to restart the program that's loading the code. So, for
+example, if we changed _calendar.rb_ to output August 2012 instead of August
+2011, we could just load it again without restarting irb. But we'd also be
+greeted with some warnings in the process:
 
-    >> load "./calendar.rb"
-    /Users/seacreature/devel/practicing-ruby-2/calendar.rb:2: 
-    warning: method redefined; discarding old initialize
-    /Users/seacreature/devel/practicing-ruby-2/calendar.rb:2: 
-    warning: previous definition of initialize was here
-    /Users/seacreature/devel/practicing-ruby-2/calendar.rb:8: 
-    warning: method redefined; discarding old to_s
-    /Users/seacreature/devel/practicing-ruby-2/calendar.rb:8:
-    warning: previous definition of to_s was here
+
+```console
+>> load "./calendar.rb"
+/Users/seacreature/devel/practicing-ruby-2/calendar.rb:2: 
+warning: method redefined; discarding old initialize
+/Users/seacreature/devel/practicing-ruby-2/calendar.rb:2: 
+warning: previous definition of initialize was here
+/Users/seacreature/devel/practicing-ruby-2/calendar.rb:8: 
+warning: method redefined; discarding old to_s
+/Users/seacreature/devel/practicing-ruby-2/calendar.rb:8:
+warning: previous definition of to_s was here
+August 2012
+Su Mo Tu We Th Fr Sa
+      1  2  3  4
+5  6  7  8  9 10 11
+12 13 14 15 16 17 18
+19 20 21 22 23 24 25
+26 27 28 29 30 31
+```
+
+If you remember that Ruby classes and modules are permanently open to
+modification, these warnings should make a lot of sense. The first time we
+called `load()`, it defined the `initialize()` and `to_s()` methods for the
+`Calendar` class. The second time we called `load()`, that class and its methods
+already existed, so it redefined them. This is not necessarily a sign of a bug,
+but Ruby warns you of the possibility that it might be.
+
+Ultimately, these warnings are Ruby telling you that there is probably a better
+way for you to do what you're trying to do. One interesting way to get around
+the problem is to use `Kernel#load()`'s wrap functionality.  Rather than telling
+you directly how it works, I'm going to show you by example and see if you can
+guess what's going on.
+
+Suppose we kill our irb session and fire up a new one; we're now back to a blank
+slate. We then run the following code and see the familiar calendar output:
+
+```console
+>> load "./calendar.rb", true
     August 2012
-    Su Mo Tu We Th Fr Sa
+Su Mo Tu We Th Fr Sa
           1  2  3  4
-    5  6  7  8  9 10 11
-    12 13 14 15 16 17 18
-    19 20 21 22 23 24 25
-    26 27 28 29 30 31
+ 5  6  7  8  9 10 11
+12 13 14 15 16 17 18
+19 20 21 22 23 24 25
+26 27 28 29 30 31
+```
 
-If you remember that Ruby classes and modules are permanently open to modification, these warnings should make a lot of sense. The first time we called `load()`, it defined the `initialize()` and `to_s()` methods for the `Calendar` class. The second time we called `load()`, that class and its methods already existed, so it redefined them. This is not necessarily a sign of a bug, but Ruby is smart enough to know that it might be something you should look at.
+Then we decide that we want to look a little deeper into the future so that we
+know what to plan for in AD 2101. We reload the code using the same command as
+before:
 
-Ultimately, these warnings are Ruby telling you that there is probably a better way for you to do what you're trying to do. One interesting way to get around the problem is to use `Kernel#load()`'s wrap functionality.  Rather than telling you directly how it works, I'm going to show you by example and see if you can guess what's going on.
+```console
+>> load "./calendar.rb", true
+    August 2101
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
+```
 
-Suppose we kill our irb session and fire up a new one; we're now back to a blank slate. We then run the following code and see the familiar calendar output.
+This time, we don't see any warnings, so obviously something has changed. Here's
+a clue:
 
-    >> load "./calendar.rb", true
-        August 2012
-    Su Mo Tu We Th Fr Sa
-              1  2  3  4
-     5  6  7  8  9 10 11
-    12 13 14 15 16 17 18
-    19 20 21 22 23 24 25
-    26 27 28 29 30 31
+```console
+>> Calendar
+NameError: uninitialized constant Object::Calendar
+  from (irb):2
+  from /.../.rvm/rubies/ruby-1.9.2-p180/bin/irb:16:in `<main>'
+```
 
-Then we decide that we want to look a little deeper into the future so that we know what to plan for in AD 2101. We reload the code using the same command as before.
+Surely the `Calendar` class must have been defined *somewhere*, because the
+program worked as expected. So what is going on here? Take a look at the
+following code; it should give you a clearer picture of what is happening.
 
-    >> load "./calendar.rb", true
-        August 2101
-    Su Mo Tu We Th Fr Sa
-        1  2  3  4  5  6
-     7  8  9 10 11 12 13
-    14 15 16 17 18 19 20
-    21 22 23 24 25 26 27
-    28 29 30 31
+```ruby
+def fake_load(file)
+  Module.new.module_eval(File.read(file))
+  true
+end
+```
 
-This time, we don't see any warnings, so obviously something has changed. Here's a clue:
+In this implementation, our approximation of `load()` is evaluating the loaded
+code in the context of an anonymous module, which essentially wraps everything
+its own namespace. This step prevents any of the constants defined in the loaded
+code from being defined within the global namespace, including any class or
+module definitions.
 
-    >> Calendar
-    NameError: uninitialized constant Object::Calendar
-      from (irb):2
-      from /.../.rvm/rubies/ruby-1.9.2-p180/bin/irb:16:in `<main>'
+The existence of this option is a hint that although `load()` is suitable for
+code loading, it is geared more to implementing customized runners for Ruby code
+than to simply loading the classes and modules in your projects. So if you've
+been using `load()` on a daily basis, you might be using the wrong tool for the
+job at least some of the time. It should be clear by the end of this article why
+that is the case.
 
-Surely the `Calendar` class must have been defined *somewhere*, because the program worked as expected. So what is going on here? Take a look at the following code; it should give you a clearer picture of what is happening.
-
-    def fake_load(file)
-      Module.new.module_eval(File.read(file))
-      true
-    end
-
-In this implementation, our approximation of `load()` is evaluating the loaded code in the context of an anonymous module, which essentially wraps everything its own namespace. This step prevents any of the constants defined in the loaded code from being defined within the global namespace, including any class or module definitions.
-
-The existence of this option is a hint that although `load()` is suitable for code loading, it is geared more to implementing customized runners for Ruby code than to simply loading the classes and modules in your projects. So if you've been using `load()` on a daily basis, you might be using the wrong tool for the job at least some of the time. It should be clear by the end of this article why that is the case.
-
-Now that we have looked at the most simple code loading behavior Ruby has to offer, we will jump straight into the deep end and explore one of its most complex options: loading code on demand via `Kernel#autoload`.
+Now that we have looked at the most simple code loading behavior Ruby has to
+offer, we will jump straight into the deep end and explore one of its most
+complex options: loading code on demand via `Kernel#autoload`.
 
 ### Kernel#autoload()
 
-Regardless of whether you've used it explicitly in your own projects, the concept of automatically loading code on demand should be familiar to anyone familiar with Rails. In Rails, none of the classes or modules you define are loaded until the first time they are referenced in your running program. There are two main benefits to this design: faster startup time and delayed loading of optional dependencies.
+Regardless of whether you've used it explicitly in your own projects, the
+concept of automatically loading code on demand should be familiar to anyone
+familiar with Rails. In Rails, none of the classes or modules you define are
+loaded until the first time they are referenced in your running program. There
+are two main benefits to this design: faster startup time and delayed loading of
+optional dependencies.
 
-Rails uses its own customized code to accomplish this result, but the basic idea is similar to what can be done with Ruby's `autoload()` method. To illustrate how `autoload()` works, let's revisit our `Calendar` class that we began building while discussing `load()`. This time, we have a file called _calendar.rb_ that contains only the definition of the `Calendar` class, not the code that actually calls methods on it.
+Rails uses its own customized code to accomplish this result, but the basic idea
+is similar to what can be done with Ruby's `autoload()` method. To illustrate
+how `autoload()` works, let's revisit our `Calendar` class that we began
+building while discussing `load()`. This time, we have a file called
+_calendar.rb_ that contains only the definition of the `Calendar` class, not the
+code that actually calls methods on it:
 
-    class Calendar
-      def initialize(month, year)
-        @month = month
-        @year  = year
-      end
+```ruby
+class Calendar
+  def initialize(month, year)
+    @month = month
+    @year  = year
+  end
 
-      # A simple wrapper around the *nix cal command.
-      def to_s
-        IO.popen(["cal", @month.to_s, @year.to_s]) { |io| io.read }
-      end
-    end
+  # A simple wrapper around the *nix cal command.
+  def to_s
+    IO.popen(["cal", @month.to_s, @year.to_s]) { |io| io.read }
+  end
+end
+```
 
 The following irb session demonstrates the behavior of `autoload()`. 
 
-    >> autoload(:Calendar, "./calendar.rb") #1
-    => nil
-    >> defined?(Calendar)                   #2
-    => nil
-    >> puts Calendar.new(8,2011)            #3
-        August 2011
-    Su Mo Tu We Th Fr Sa
-        1  2  3  4  5  6
-     7  8  9 10 11 12 13
-    14 15 16 17 18 19 20
-    21 22 23 24 25 26 27
-    28 29 30 31
+```console
+>> autoload(:Calendar, "./calendar.rb") #1
+=> nil
+>> defined?(Calendar)                   #2
+=> nil
+>> puts Calendar.new(8,2011)            #3
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
 
-    => nil
-    >> defined?(Calendar)                   #4
-    => "constant"
+=> nil
+>> defined?(Calendar)                   #4
+=> "constant"
+```
 
-In our first step, we set up the `autoload()` hook, instructing Ruby to load the file _calendar.rb_ at the time that the first constant lookup happens for the Calendar constant. In the second step, we check to ensure that `autoload()` does not actually load the file for you automatically by verifying that Calendar has not yet been defined. Then, in our third step, we build and output our Calendar. Last, we see that the constant is now defined.
+In our first step, we set up the `autoload()` hook, instructing Ruby to load the
+file _calendar.rb_ at the time that the first constant lookup happens for the
+Calendar constant. In the second step, we check to ensure that `autoload()` does
+not actually load the file for you automatically by verifying that Calendar has
+not yet been defined. Then, in our third step, we build and output our Calendar.
+Last, we see that the constant is now defined.
 
-This exposes us to some cool Ruby voodoo while also raising a lot of questions. It may help to approximate how `autoload()` might be implemented in order to wrap your head around the idea. Although the following code is evil and should never be used for anything but educational purposes, it simulates the load on demand behavior nicely.
+This exposes us to some cool Ruby voodoo while also raising a lot of questions.
+It may help to approximate how `autoload()` might be implemented in order to
+wrap your head around the idea. Although the following code is evil and should
+never be used for anything but educational purposes, it simulates the load on
+demand behavior nicely.
 
-    $load_hooks = Hash.new
+```ruby
+$load_hooks = Hash.new
 
-    module Kernel
-      def fake_autoload(constant_name, file_name)
-        $load_hooks[constant_name] = file_name
-      end
-    end
+module Kernel
+  def fake_autoload(constant_name, file_name)
+    $load_hooks[constant_name] = file_name
+  end
+end
 
-    def Object.const_missing(constant)
-      load $load_hooks[constant]
-      const_get(constant)
-    end
+def Object.const_missing(constant)
+  load $load_hooks[constant]
+  const_get(constant)
+end
 
-    fake_autoload :Calendar, "./calendar.rb"
-    p defined?(Calendar)
-    puts Calendar.new(8,2011)
-    p defined?(Calendar)
+fake_autoload :Calendar, "./calendar.rb"
+p defined?(Calendar)
+puts Calendar.new(8,2011)
+p defined?(Calendar)
+```
 
-After reading the previous example code and playing with it a bit, remember the dependency on `const_missing()` and forget pretty much everything else about the implementation. The real `autoload()` handles a lot more cases than this trivial example gives it credit for.
+After reading the previous example code and playing with it a bit, remember the
+dependency on `const_missing()` and forget pretty much everything else about the
+implementation. The real `autoload()` handles a lot more cases than this trivial
+example gives it credit for.
 
-With the `const_missing()` dependency in mind, try to guess what will happen when the following code is run:
+With the `const_missing()` dependency in mind, try to guess what will happen
+when the following code is run:
 
-    class Calendar; end
+```ruby
+class Calendar; end
 
-    autoload :Calendar, "./calendar.rb"
-    p defined?(Calendar)
-    puts Calendar.new(8,2011)
-    p defined?(Calendar)
+autoload :Calendar, "./calendar.rb"
+p defined?(Calendar)
+puts Calendar.new(8,2011)
+p defined?(Calendar)
+```
 
-If you guessed that it didn't output a nicely formatted calendar, you guessed correctly. Below you can see that when I run this script, all the code in _calendar.rb_ never gets loaded, so the default `Object#initialize` and `Object#to_s` are being called instead.
+If you guessed that it didn't output a nicely formatted calendar, you guessed
+correctly. Below you can see that when I run this script, all the code in
+_calendar.rb_ never gets loaded, so the default `Object#initialize` and
+`Object#to_s` are being called instead:
 
-    "constant"
-    <Calendar:0x0000010086d6b0>
-    "constant"
+```console
+"constant"
+<Calendar:0x0000010086d6b0>
+"constant"
+```
 
-Because `autoload()` does not check to see whether a constant is already defined when it registers its hook, you do not get an indication that the _calendar.rb_ file was never loaded until you actually try to use functionality defined in that file. Thus `autoload()` is safe to use only when there is a single, uniform place where a constant is meant to be defined; it cannot be used to incrementally build up class or module definitions from several different source files.
+Because `autoload()` does not check to see whether a constant is already defined
+when it registers its hook, you do not get an indication that the _calendar.rb_
+file was never loaded until you actually try to use functionality defined in
+that file. Thus `autoload()` is safe to use only when there is a single, uniform
+place where a constant is meant to be defined; it cannot be used to
+incrementally build up class or module definitions from several different source
+files.
 
-This sort of rigidity is frustrating, because unlike load(), which does not care how or where you define your code, `autoload()` is much more opinionated. What you've seen here is a single example of the constraints it puts on you, but it is easy to imagine other scenarios in which `autoload()` can feel like a brittle way to load code. I'll leave it up to you to try to figure out some of those issues, but feel free to ask me for some hints if you get stumped.
+This sort of rigidity is frustrating, because unlike load(), which does not care
+how or where you define your code, `autoload()` is much more opinionated. What
+you've seen here is a single example of the constraints it puts on you, but it
+is easy to imagine other scenarios in which `autoload()` can feel like a brittle
+way to load code. I'll leave it up to you to try to figure out some of those
+issues, but feel free to ask me for some hints if you get stumped.
 
-In the context of Rails—particularly when working in development mode, in which the whole environment gets reloaded on every request—some form of automatic loading makes sense. However, outside of that environment, the drawbacks of `autoload()` tend to outweigh the benefits, so most Ruby projects tend to avoid it entirely by making heavy use of `require()`.
+In the context of Rails—particularly when working in development mode, in which
+the whole environment gets reloaded on every request—some form of automatic
+loading makes sense. However, outside of that environment, the drawbacks of
+`autoload()` tend to outweigh the benefits, so most Ruby projects tend to avoid
+it entirely by making heavy use of `require()`.
 
 ### Kernel#require()
 
-If you've written any code at all outside of Rails, odds are you've used `require()` before. It is actually quite similar to `load()` but has a few additional features that come in handy. To illustrate how `require()` works, let's revisit our original _calendar.rb_ file, the one that had a bit of code to be executed in the end of it.
+If you've written any code at all outside of Rails, odds are you've used
+`require()` before. It is actually quite similar to `load()` but has a few
+additional features that come in handy. To illustrate how `require()` works,
+let's revisit our original _calendar.rb_ file, the one that had a bit of code to
+be executed in the end of it.
 
-    class Calendar
-      def initialize(month, year)
-        @month = month
-        @year  = year
-      end
+```ruby
+class Calendar
+  def initialize(month, year)
+    @month = month
+    @year  = year
+  end
 
-      # A simple wrapper around the *nix cal command.
-      def to_s
-        IO.popen(["cal", @month.to_s, @year.to_s]) { |io| io.read }
-      end
-    end
+  # A simple wrapper around the *nix cal command.
+  def to_s
+    IO.popen(["cal", @month.to_s, @year.to_s]) { |io| io.read }
+  end
+end
 
-    puts Calendar.new(8, 2011)
+puts Calendar.new(8, 2011)
+```
 
-If we attempt to load this code twice via `require()`, we immediately see an important way in which it differs from `load()`.
+If we attempt to load this code twice via `require()`, we immediately see an
+important way in which it differs from `load()`.
 
-    >> require "./calendar.rb" #1
-        August 2011
-    Su Mo Tu We Th Fr Sa
-        1  2  3  4  5  6
-     7  8  9 10 11 12 13
-    14 15 16 17 18 19 20
-    21 22 23 24 25 26 27
-    28 29 30 31
+```console
+>> require "./calendar.rb" #1
+    August 2011
+Su Mo Tu We Th Fr Sa
+    1  2  3  4  5  6
+ 7  8  9 10 11 12 13
+14 15 16 17 18 19 20
+21 22 23 24 25 26 27
+28 29 30 31
 
-    => true
-    >> require "./calendar.rb" #2
-    => false
+=> true
+>> require "./calendar.rb" #2
+=> false
+```
 
-When I ran `require()` the first time, the familiar calendar output greeted me, and then the function returned a true value. The second time I ran it, nothing happened and the function returned false. This is a feature, and not a bug. The following code is a crude approximation of what is going on under the hood in `require()`:
+When I ran `require()` the first time, the familiar calendar output greeted me,
+and then the function returned a true value. The second time I ran it, nothing
+happened and the function returned false. This is a feature, and not a bug. The
+following code is a crude approximation of what is going on under the hood in
+`require()`:
 
-    $LOADED_BY_FAKE_REQUIRE = Array.new
+```ruby
+$LOADED_BY_FAKE_REQUIRE = Array.new
 
-    def fake_require(file)
-      full_path = File.expand_path(file)
-      return false if $LOADED_BY_FAKE_REQUIRE.include?(full_path)
+def fake_require(file)
+  full_path = File.expand_path(file)
+  return false if $LOADED_BY_FAKE_REQUIRE.include?(full_path)
 
-      load full_path
-      $LOADED_BY_FAKE_REQUIRE << full_path
+  load full_path
+  $LOADED_BY_FAKE_REQUIRE << full_path
 
-      return true
-    end
+  return true
+end
+```
 
-This behavior ensures that each file loaded by `require()` is loaded exactly once, even if the `require()` calls appear in many places. Therefore, updates to those files will take effect after they have been loaded once. Although this behavior makes `require()` less suitable than `load()` for quick exploratory code loading, it does prevent programs from needlessly reloading the same code again and again, similar to how `autoload()` works once a constant has been loaded.
+This behavior ensures that each file loaded by `require()` is loaded exactly
+once, even if the `require()` calls appear in many places. Therefore, updates to
+those files will take effect after they have been loaded once. Although this
+behavior makes `require()` less suitable than `load()` for quick exploratory
+code loading, it does prevent programs from needlessly reloading the same code
+again and again, similar to how `autoload()` works once a constant has been
+loaded.
 
 Another interesting property of `require()` is that you can omit the file extension when loading your code. Thus `require("./calendar")` will work just as well as `require("./calendar.rb")`. Though this may seem like a small feature, the reason it exists is that Ruby can actually load more than just Ruby files. When you omit an extension on a file loaded with `require()`, it will attempt to load the file with the ".rb" extension first, but will then cycle through the file extensions used by C extensions as well, such as ".so", ".o", and ".dll". Despite being somewhat of an obscure property, it's one that we often take for granted when we load certain standard libraries or third-party gems. This behavior is another detail that separates `require()` from `load()`, as the latter can work only with explicit file extensions.  
 
@@ -261,36 +393,45 @@ Ruby 1.9.2 removes the current working directory from your path by default for s
 
 Imagine a more typically directory structure, such as this:
 
-    lib/
-      calendar.rb
-      calendar/
-        month.rb
-        year.rb
-    bin/
-      calendar.rb
+
+```console
+lib/
+  calendar.rb
+  calendar/
+    month.rb
+    year.rb
+bin/
+  calendar.rb
+```
 
 We could have a _bin/ruby_calendar.rb_ file that looks like this code:
 
-    require "lib/calendar"
+```ruby
+require "lib/calendar"
 
-    case ARGV.size
-    when 2
-      puts Calendar::Month.new(ARGV[0], ARGV[1])
-    when 1
-      puts Calendar::Year.new(ARGV[0])
-    else
-      raise "Invalid arguments"
-    end
+case ARGV.size
+when 2
+  puts Calendar::Month.new(ARGV[0], ARGV[1])
+when 1
+  puts Calendar::Year.new(ARGV[0])
+else
+  raise "Invalid arguments"
+end
+```
 
 Similarly, our _lib/calendar.rb file_ might include `require()` calls such as these:
 
-    require "lib/calendar/year"
-    require "lib/calendar/month"
+```ruby
+require "lib/calendar/year"
+require "lib/calendar/month"
+```
 
 Now if we run _bin/ruby_calendar.rb_ from the project root, things will work as expected.
 
-    $ ruby bin/ruby_calendar.rb 2011
-    # ...
+```bash
+$ ruby bin/ruby_calendar.rb 2011
+# ...
+```
 
 But if we ran this file from any other directory, it'd fail to work as expected because the relative paths would be evaluated relative to wherever you executed the files from, not relative to where the files live on the file system. That is, if you execute ruby_calendar.rb in the bin/ folder, it would look for a file called bin/lib/calendar.rb.
 
@@ -298,67 +439,80 @@ One way to solve this problem is to use the same mechanism that the Ruby standar
 
 In _bin/ruby_calendar.rb_, we rewrite our code to match this:
 
-    $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
-    require "calendar"
+```ruby
+$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
+require "calendar"
 
-    case ARGV.size
-    when 2
-      puts Calendar::Month.new(ARGV[0], ARGV[1])
-    when 1
-      puts Calendar::Year.new(ARGV[0])
-    else
-      raise "Invalid arguments"
-    end
+case ARGV.size
+when 2
+  puts Calendar::Month.new(ARGV[0], ARGV[1])
+when 1
+  puts Calendar::Year.new(ARGV[0])
+else
+  raise "Invalid arguments"
+end
+```
 
 Because we've added the _lib/_ folder to the lookup path for all `require()` calls in our application, we can modify _lib/calendar.rb_ to match the following:
 
-    require "calendar/year"
-    require "calendar/month"
+```ruby
+require "calendar/year"
+require "calendar/month"
+```
 
 This approach makes it possible to run the _ruby_calendar.rb_ program from any location within the file system, as long as we tell ruby where to find it. That means you can run it directly from within the _bin/_ folder, or even with an absolute path.
 
-    # NOTE: this is common in cron jobs.
-    $ ruby /Users/seacreature/devel/ruby_calendar/bin/ruby_calendar.rb
+
+```bash
+# NOTE: this is common in cron jobs.
+$ ruby /Users/seacreature/devel/ruby_calendar/bin/ruby_calendar.rb
+```
 
 This approach works, and was quite common in Ruby for some time. Then, people began to get itchy about it, because it is definitely overkill. It effectively adds an entire folder to the `$LOAD_PATH`, giving Ruby one more place it has to look on every require and possibly leading to unexpected naming conflicts between libraries.
 
 The solution to that problem is to not mess with the `$LOAD_PATH` in your code. Therefore, you expect either that the `$LOAD_PATH` variable will be properly set by the `-I` flag when you invoke ruby or irb, or that you have to write code that dynamically determines the proper relative paths to require based on your current working directory. The latter approach requires less effort from the end user but makes your code ugly. Below you'll see what people resorted to on Ruby 1.8 before a better solution came along:
 
-    # bin/ruby_calendar.rb
-    require "#{File.dirname(__FILE__)}/../lib/calendar"
 
-    case ARGV.size
-    when 2
-      puts Calendar::Month.new(ARGV[0], ARGV[1])
-    when 1
-      puts Calendar::Year.new(ARGV[0])
-    else
-      raise "Invalid arguments"
-    end
+```ruby
+# bin/ruby_calendar.rb
+require "#{File.dirname(__FILE__)}/../lib/calendar"
 
-    # lib/calendar.rb
-    require "#{File.dirname(__FILE__)}/calendar/year"
-    require "#{File.dirname(__FILE__)}/calendar/month"
+case ARGV.size
+when 2
+  puts Calendar::Month.new(ARGV[0], ARGV[1])
+when 1
+  puts Calendar::Year.new(ARGV[0])
+else
+  raise "Invalid arguments"
+end
+
+# lib/calendar.rb
+require "#{File.dirname(__FILE__)}/calendar/year"
+require "#{File.dirname(__FILE__)}/calendar/month"
+```
 
 Using this approach, you do not add anything to the `$LOAD_PATH` but instead dynamically build up relative paths by referencing the `__FILE__` variable and getting a path to the directory it's in. This code will evaluate to different values depending on where you run it from, but in the end, the right path will be produced and things will just work.
 
 Predictably, people took efforts to hide this sort of ugliness behind helper functions, and one such function was eventually adopted into Ruby 1.9. That helper is predictably called `require_relative()`. Using `require_relative()`, we can simplify our calls significantly while preserving the "don't touch the `$LOAD_PATH` variable" ethos.
 
-    # bin/ruby_calendar.rb
-    require_relative "../lib/calendar"
 
-    case ARGV.size
-    when 2
-      puts Calendar::Month.new(ARGV[0], ARGV[1])
-    when 1
-      puts Calendar::Year.new(ARGV[0])
-    else
-      raise "Invalid arguments"
-    end
+```ruby
+# bin/ruby_calendar.rb
+require_relative "../lib/calendar"
 
-    # lib/calendar.rb
-    require_relative "calendar/year"
-    require_relative "calendar/month"
+case ARGV.size
+when 2
+  puts Calendar::Month.new(ARGV[0], ARGV[1])
+when 1
+  puts Calendar::Year.new(ARGV[0])
+else
+  raise "Invalid arguments"
+end
+
+# lib/calendar.rb
+require_relative "calendar/year"
+require_relative "calendar/month"
+```
 
 This code looks and feels like it would work in the way that we'd like to think `require()` would work. The files we reference are relative to the file in which the actual calls are made, rather than the folder in which the script was executed in. For this reason, it is a much better approach than pretty much anything I've shown so far.
 
@@ -388,13 +542,15 @@ Whether using `require_relative()` explicitly, or one of the workarounds listed 
 
 I never use `autoload()`. I've just not run into the issues that some folks in Rails experience regarding slow startup times of applications in any way that has mattered to me. I feel like the various gotchas that come along with using `autoload()` and the strict conventions it enforces are not good things to impose on general-purpose uses of Ruby. I don't know whether I think that it makes sense in to context of Rails, but that's a very different question than whether it should be used in ordinary Ruby applications and libraries. It makes at least some sense in Rails, but in most Ruby applications, it does not. The only time I might think about looking into `autoload()` is if I had some sort of optional dependency that I wanted to be loaded only on demand. I have never actually run into that issue, and I've found that the following hack provides a way to do optional dependencies that seems to work just fine:
 
-    begin
-      require "some_external_dependency"
-      require "my_lib/some_feature_that_depends_on_dependency"
-    rescue LoadError
-      warn "Could not load some_external_dependency."+
-           " Some features are disabled"
-    end
+```ruby
+begin
+  require "some_external_dependency"
+  require "my_lib/some_feature_that_depends_on_dependency"
+rescue LoadError
+  warn "Could not load some_external_dependency."+
+       " Some features are disabled"
+end
+```
 
 But really, optional dependencies are things I very rarely need to think about. There are valid use cases for them, but unless something is very difficult to install or your project is specifically meant to wrap various mutually exclusive dependencies, I typically will just load up all my dependencies regardless of whether the user ends up using them. This policy has not caused me any problems, but your mileage will certainly vary depending on the type of work you are doing.
 
