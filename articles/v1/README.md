@@ -19,7 +19,7 @@ following articles on practicingruby.com:
 * [Issue 1.14: Duck typing in practice, Part 1](http://practicingruby.com/articles/shared/rvdcaomuyjzr) (2010.12.28)
 * [Issue 1.15: Duck typing in practice, Part 2](http://practicingruby.com/articles/shared/pdcabdowgpji) (2010.12.31)
 * [Issue 1.16: Interesting ruby hackers](http://practicingruby.com/articles/shared/ikbmonxlljuh) (2011.01.03)
-* [Issue 1.17: Interesting ruyb hacker-writers](http://practicingruby.com/articles/shared/mvzltpbdtdft) (2011.01.07)
+* [Issue 1.17: Interesting ruby hacker-writers](http://practicingruby.com/articles/shared/mvzltpbdtdft) (2011.01.07)
 * [Issue 1.18: Dirty little secrets about testing](http://practicingruby.com/articles/shared/vpqmwrhegmcj) (2011.01.14)
 * [Issue 1.19: Thoughts on mocking, Part 1](http://practicingruby.com/articles/shared/ccivepfxynrq) (2011.01.19)
 * [Issue 1.20: Thoughts on mocking, Part 2](http://practicingruby.com/articles/shared/wudydnfyhyun) (2011.01.22)
