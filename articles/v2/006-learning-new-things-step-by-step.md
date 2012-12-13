@@ -358,7 +358,9 @@ always do
   # same code as in step 8 goes here
 
   @goodies.reject! { |e|
-    [e.pos.x, e.pos.y, 10, 10].to_rect.inside?([@rect.pos.x, @rect.pos.y, 20, 20])
+    goodie = [e.pos.x, e.pos.y, 10, 10].to_rect
+    
+    goodie.inside?([@rect.pos.x, @rect.pos.y, 20, 20])
   }
 end
 ```
@@ -467,7 +469,8 @@ scene :square do
     # same code as in step 11
 
     @game_over ||= @baddies.any? { |e|
-      [e.pos.x, e.pos.y, 15, 15].to_rect.collide?([@rect.pos.x, @rect.pos.y, 20,20])
+      baddie = [e.pos.x, e.pos.y, 15, 15].to_rect
+      baddie.collide?([@rect.pos.x, @rect.pos.y, 20,20])
     }
   end
 

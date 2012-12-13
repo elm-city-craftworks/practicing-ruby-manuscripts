@@ -330,10 +330,12 @@ end
 
 downloader = DownloadManager.new 
 
-downloader.save("http://prawn.majesticseacreature.com/manual.pdf", "manual.pdf")
+downloader.save("http://prawn.majesticseacreature.com/manual.pdf", 
+                "manual.pdf")
 puts "Starting Prawn manual download"
 
-downloader.save("http://sandal.github.com/rbp-book/pdfs/rbp_1-0.pdf", "rbp_1-0.pdf")
+downloader.save("http://sandal.github.com/rbp-book/pdfs/rbp_1-0.pdf", 
+                "rbp_1-0.pdf")
 puts "Starting download of Ruby Best Practices book"
 
 puts "Waiting for downloads to finish..."

@@ -149,7 +149,8 @@ test "github manual linking" do
 
 
   assert_equal edit_authorization_link_path(auth_link), current_path
-  fill_in "authorization_link_mailchimp_email", :with => "gregory.t.brown@gmail.com"
+  fill_in "authorization_link_mailchimp_email", 
+          :with => "gregory.t.brown@gmail.com"
   click_button("Link this email address to my Github account")
 
   refute_empty ActionMailer::Base.deliveries
