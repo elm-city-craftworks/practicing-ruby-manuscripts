@@ -50,7 +50,7 @@ The cost of introducing a logging system is that once you depend on logs for you
 
 ### Lesson 2: Plan for various kinds of predictable failures.
 
-Because Newman does not know anything about the applications it runs except that they all implement a `call` method, it is not possible to be selective about what kinds of errors to handle. Instead, a catch-all mechanism is implemented in the `Newman::Server#process_request` method:
+Because Newman does not know anything about the applications it runs except that they all implement a `call` method, it is not possible to be selective about what kinds of errors to handle. Instead, a catch-all mechanism is implemented in the `process_request` method:
 
 ```ruby
 module Newman
