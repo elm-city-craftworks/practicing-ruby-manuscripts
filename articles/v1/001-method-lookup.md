@@ -1,6 +1,6 @@
 I decided to start off this newsletter with one of the most basic but essential pieces of knowledge you can have about Ruby's object model: the way it looks up methods. Let's do a little exploration by working through a few examples.
 
-Below we have a simple report class who's job is to perform some basic data manipulations and then produce some text output.
+Below we have a simple report class tasked with performing some basic data manipulations and then producing some text output.
 
 ```ruby
 class Report
