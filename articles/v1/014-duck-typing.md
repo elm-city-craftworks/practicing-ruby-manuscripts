@@ -14,7 +14,7 @@ that does *not* involve duck typing.
 
 ```ruby
 def read_data(source)
-  case file
+  case source
   when String
     File.read(source)
   when IO
