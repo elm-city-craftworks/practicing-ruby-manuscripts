@@ -141,7 +141,7 @@ The only requirement for this code to work as expected is that each `Computation
 
 While not a technically complicated example, there is surprising power in having a primitive built into your programming language which trivializes the implementation of the Template Method design pattern. If you look at Ruby's `Enumerable` module and the powerful features it offers, you might think it would be a much more complicated example to study. But it too hinges on Template Method and requires only an `each()` method to give you all sorts of complex functionality including things like `select()`, `map()`, and `inject()`. If you haven't tried it before, you should certainly try to roll your own `Enumerable` module to get a sense of just how useful mixins can be.
 
-We can also invert this relationship by having our class define a template, and then relying on the module that we mix in to provide the necessary details. If we look back at an previous example `TicTacToe`, we can see a practical example of this technique by looking at the play method in our `TicTacToe::Game` class.
+We can also invert this relationship by having our class define a template, and then relying on the module that we mix in to provide the necessary details. If we look back at a previous example `TicTacToe`, we can see a practical example of this technique by looking at the play method in our `TicTacToe::Game` class.
 
 ```ruby
 module TicTacToe
