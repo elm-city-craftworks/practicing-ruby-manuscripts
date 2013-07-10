@@ -268,7 +268,7 @@ Before we wrap up, we should investigate why this is the case.
 
 The key thing to recognize is that `include()` mixes methods into the instances of the base object while `extend()` mixes methods into the base object itself. Notice that this is more general than a class method / instance method dichotomy.
 
-Let's explore a few differently possibilities using a somewhat contrived example so that we can focus on the mixin mechanics. First, we start with an ordinary module, which is somewhat useless on its own.
+Let's explore a few different possibilities using a somewhat contrived example so that we can focus on the mixin mechanics. First, we start with an ordinary module, which is somewhat useless on its own.
 
 ```ruby
 module Greeter
