@@ -200,7 +200,7 @@ module TicTacToe
 end
 ```
 
-When we look at this code, we see some basic business logic implementing the rules of Tic Tac Toe, with some placeholder hooks being provided by yield that allows the calling code to inject some logic at certain key points in the process. This is how we manage to split the UI code from the game logic, without creating frivolous adapter classes.
+When we look at this code, we see some basic business logic implementing the rules of Tic Tac Toe, with some placeholder hooks being provided by `yield()` that allows the calling code to inject some logic at certain key points in the process. This is how we manage to split the UI code from the game logic, without creating frivolous adapter classes.
 
 While this is amore complicated example than our walkthrough of `Comparable`, the two share a common thread. In both cases, some coupling exists between the module and the object it is being mixed into. This is a common pattern when using mixins, in which the module and the code it is mixed into have to do a bit of a secret handshake to be able to talk to one another, but as long as they agree on that, neither needs to know about the other's inner workings. The end result is two components which must agree on an interface but do not need to necessarily understand each other's implementations. Code with this sort of coupling is easy to test and easy to refactor.
 
