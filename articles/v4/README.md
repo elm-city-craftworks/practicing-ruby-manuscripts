@@ -12,7 +12,7 @@ following articles on practicingruby.com:
 * [Issue 4.8: Implementing the Active Record pattern, part 1](https://practicingruby.com/articles/shared/cpqewwhqoaeq) (2012.06.12)
 * [Issue 4.9: The hidden costs of inheritance](https://practicingruby.com/articles/shared/goiwglvezuip) (2012.06.19)
 * [Issue 4.10: Implementing the Active Record pattern, part 2](https://practicingruby.com/articles/shared/ucqsaohjxddv) (2012.07.03)
-* [Issue 4.11: Responsibility-centric vs. data-centric design](https://practicingruby.com/articles/shared/lrwkumltjnxr) (2012.07.10)
+* [Issue 4.11: Responsibility-centric vs. data-centric design](https://practicingruby.com/articles/shared/lrwkumltjnxr) (2012.07.10, by Greg Moeck)
 * [Issue 4.12.1: (TDD Study) End-to-end testing is essential](https://practicingruby.com/articles/shared/bgtfdvbtvdnl) (2012.07.18)
 * [Issue 4.12.2: (TDD Study) Refactoring is not redesign](https://practicingruby.com/articles/shared/fdaikyllpsya) (2012.07.19)
 * [Issue 4.12.3: (TDD Study) Mock objects deeply influence design](https://practicingruby.com/articles/shared/hpeujsdoiehq) (2012.07.24)
