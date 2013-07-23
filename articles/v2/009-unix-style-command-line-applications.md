@@ -95,7 +95,7 @@ fail "Failed 'cat < file == rcat < file" unless cat_output == rcat_output
 If we needed only to pass these three tests, we'd be in luck. Ruby provides a special stream object called `ARGF` that combines multiple input files into a single stream or falls back to standard input if no files are provided. Our entire script could look something like this:
 
 ```ruby
-ARGF.lines.each { |line| print line }
+ARGF.each_line { |line| print line }
 ```
 
 However, the actual behavior of `cat` is a bit more complex than this, and it ended up being more convenient to write some custom code that works in a fashion somewhat similar to `ARGF`:
@@ -132,7 +132,7 @@ The main difference between this code and the `ARGF`-based approach is that `RCa
 module RCat
   class Display
     def render(data)
-      lines = data.lines
+      lines = data.each_line
       loop { render_line(lines) }
     end
 
@@ -149,16 +149,16 @@ end
 The use of `loop` instead of an ordinary Ruby iterator might feel a bit strange here, but it works fairly well in combination with `Enumerator#next`. The following irb session demonstrates how the two interact with one another:
 
 ```
->> lines = "a\nb\nc\n".lines
-=> #<Enumerator: "a\nb\nc\n":lines>
+>> lines = "a\nb\nc\n".each_line
+=> #<Enumerator: "a\nb\nc\n":each_line>
 >> loop { p lines.next }
 "a\n"
 "b\n"
 "c\n"
 => nil
 
->> lines = "a\nb\nc\n".lines
-=> #<Enumerator: "a\nb\nc\n":lines>
+>> lines = "a\nb\nc\n".each_line
+=> #<Enumerator: "a\nb\nc\n":each_line>
 >> lines.next
 => "a\n"
 >> lines.next
