@@ -16,6 +16,6 @@ following articles on practicingruby.com:
 * [Issue 4.12.1: (TDD Study) End-to-end testing is essential](https://practicingruby.com/articles/shared/bgtfdvbtvdnl) (2012.07.18)
 * [Issue 4.12.2: (TDD Study) Refactoring is not redesign](https://practicingruby.com/articles/shared/fdaikyllpsya) (2012.07.19)
 * [Issue 4.12.3: (TDD Study) Mock objects deeply influence design](https://practicingruby.com/articles/shared/hpeujsdoiehq) (2012.07.24)
-* [Issue 4.12.3: (TDD Study) Spiking is not cowboy coding](https://practicingruby.com/articles/shared/nirmcxfrrpgx) (2012.07.26)
+* [Issue 4.12.4: (TDD Study) Spiking is not cowboy coding](https://practicingruby.com/articles/shared/nirmcxfrrpgx) (2012.07.26)
 
 If you enjoy what you read here, please subscribe to [Practicing Ruby](http://practicingruby.com). These articles would not exist without the support of our paid subscribers.
