@@ -121,7 +121,7 @@ excessively. For this reason, Ruby implements `Math` as a module.
 => Module
 ```
 
-For another great example of modular code design in Ruby itself, be sure to check out the `FileUtils` standard library, which allows you to basic *nix file operations as if they were just ordinary function calls.
+For another great example of modular code design in Ruby itself, be sure to check out the `FileUtils` standard library, which allows you to execute basic *nix file operations as if they were just ordinary function calls.
 
 After seeing how Ruby is using this technique, I didn't find it hard to stumble upon scenarios in my own code that could benefit from a similar design. For example, when I was working on building out the backend for a trivia website, I was given some logic for normalizing user input so that it could be compared against a predetermined pattern.
 

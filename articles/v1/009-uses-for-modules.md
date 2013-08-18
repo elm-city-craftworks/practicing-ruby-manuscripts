@@ -1,6 +1,6 @@
 ### Using Mix-ins to Augment Class Definitions
 
-Although knowing [how to use modules for namespacing](http://practicingruby.com/articles/36) is important, it's really only a small part of what you can do with modules. What modules do best is providing a convenient way to write code that be mixed into other objects, augmenting their behaviors. Because modules facilitate code sharing in a way that is distinct from both the general OO concept of class inheritance and from things like Java's interfaces, they require you to think about your design in a way that's a bit different from most other object oriented programming languages.
+Although knowing [how to use modules for namespacing](http://practicingruby.com/articles/36) is important, it's really only a small part of what you can do with modules. What modules do best is providing a convenient way to write code that can be mixed into other objects, augmenting their behaviors. Because modules facilitate code sharing in a way that is distinct from both the general OO concept of class inheritance and from things like Java's interfaces, they require you to think about your design in a way that's a bit different from most other object oriented programming languages.
 
 While I imagine that most of our readers are comfortable with using mixins, I'll
 refer to some core Ruby mixins to illustrate their power before moving on to more 
@@ -141,7 +141,7 @@ The only requirement for this code to work as expected is that each `Computation
 
 While not a technically complicated example, there is surprising power in having a primitive built into your programming language which trivializes the implementation of the Template Method design pattern. If you look at Ruby's `Enumerable` module and the powerful features it offers, you might think it would be a much more complicated example to study. But it too hinges on Template Method and requires only an `each()` method to give you all sorts of complex functionality including things like `select()`, `map()`, and `inject()`. If you haven't tried it before, you should certainly try to roll your own `Enumerable` module to get a sense of just how useful mixins can be.
 
-We can also invert this relationship by having our class define a template, and then relying on the module that we mix in to provide the necessary details. If we look back at an previous example `TicTacToe`, we can see a practical example of this technique by looking at the play method in our `TicTacToe::Game` class.
+We can also invert this relationship by having our class define a template, and then relying on the module that we mix in to provide the necessary details. If we look back at a previous example `TicTacToe`, we can see a practical example of this technique by looking at the play method in our `TicTacToe::Game` class.
 
 ```ruby
 module TicTacToe
@@ -200,9 +200,9 @@ module TicTacToe
 end
 ```
 
-When we look at this code, we see some basic business logic implementing the rules of Tic Tac Toe, with some placeholder hooks being provided by yield that allows the calling code to inject some logic at certain key points in the process. This is how we manage to split the UI code from the game logic, without creating frivolous adapter classes.
+When we look at this code, we see some basic business logic implementing the rules of Tic Tac Toe, with some placeholder hooks being provided by `yield()` that allows the calling code to inject some logic at certain key points in the process. This is how we manage to split the UI code from the game logic, without creating frivolous adapter classes.
 
-While this is amore complicated example than our walkthrough of `Comparable`, the two share a common thread. In both cases, some coupling exists between the module and the object it is being mixed into. This is a common pattern when using mixins, in which the module and the code it is mixed into have to do a bit of a secret handshake to be able to talk to one another, but as long as they agree on that, neither needs to know about the other's inner workings. The end result is two components which must agree on an interface but do not need to necessarily understand each other's implementations. Code with this sort of coupling is easy to test and easy to refactor.
+While this is a more complicated example than our walkthrough of `Comparable`, the two share a common thread. In both cases, some coupling exists between the module and the object it is being mixed into. This is a common pattern when using mixins, in which the module and the code it is mixed into have to do a bit of a secret handshake to be able to talk to one another, but as long as they agree on that, neither needs to know about the other's inner workings. The end result is two components which must agree on an interface but do not need to necessarily understand each other's implementations. Code with this sort of coupling is easy to test and easy to refactor.
 
 ### Using Mix-ins to Augment Objects Directly
 
@@ -268,7 +268,7 @@ Before we wrap up, we should investigate why this is the case.
 
 The key thing to recognize is that `include()` mixes methods into the instances of the base object while `extend()` mixes methods into the base object itself. Notice that this is more general than a class method / instance method dichotomy.
 
-Let's explore a few differently possibilities using a somewhat contrived example so that we can focus on the mixin mechanics. First, we start with an ordinary module, which is somewhat useless on its own.
+Let's explore a few different possibilities using a somewhat contrived example so that we can focus on the mixin mechanics. First, we start with an ordinary module, which is somewhat useless on its own.
 
 ```ruby
 module Greeter
