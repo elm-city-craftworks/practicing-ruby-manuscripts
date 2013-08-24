@@ -130,7 +130,7 @@ class BasicController
   end
 
   def self.inherited(child_class)
-    before_filters.each { |f| child_class.before_filters.unshift(f) }
+    before_filters.reverse_each { |f| child_class.before_filters.unshift(f) }
   end
 
   def execute(action)
