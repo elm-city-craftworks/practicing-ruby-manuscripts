@@ -465,7 +465,7 @@ In addition to documentation and cleanup, I did what I could to make it very eas
 You can try things out for yourself by following the instructions in the [README](https://github.com/sandal/stack_wars/blob/master/README.md); this video will give you a sense of what the first release of this project ended up looking like:
 
 <div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/oom5n4Azq2I?rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="//www.youtube.com/embed/oom5n4Azq2I?rel=0" frameborder="0" allowfullscreen></iframe>
 </div>
 
 Although in the grand scheme of things it may not look like much, I am pretty happy with it for a 0.1.0 release!

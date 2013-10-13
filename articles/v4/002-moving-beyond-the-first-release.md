@@ -54,7 +54,7 @@ game is designed to be played without any visual feedback at all,
 and that while testing it I have typically played with my eyes closed! 
 
 <div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/cM0WHWgdmQk" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="//www.youtube.com/embed/cM0WHWgdmQk" frameborder="0" allowfullscreen></iframe>
 </div>
 
 The "audio only" twist is enough to inject some excitement into a very boring
