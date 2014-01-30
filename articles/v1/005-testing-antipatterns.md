@@ -1,9 +1,3 @@
-Ruby has been described as having a test-obsessed culture. In many ways, this is a key strength of our community, as it often leads to producing better, more reliable software. Unfortunately, Ruby developers often focus more on the quantity of tests through metrics such as code coverage than they do on the quality of the tests they're writing. 
-
-Crafting a well written test suite isn't easy, even for fairly experienced developers. After doing some initial sketches about what I could cover about improper ways to design and write tests, I realized I could probably dedicate an entire book to the topic. Rather than covering many anti-patterns in a shallow fashion, I decided to cover a single example in depth today. I'll revisit the topic in future issues, exposing a new ugly little corner of the Ruby testing world.
-
-### Testing Anti-Pattern: Testing private methods
-
 If you are using `send` to test private methods in your tests, you are almost certainly doing it wrong. Most private methods tend to fall into one of the following categories, none of which require `send` to test:
 
 * A method that does not have behavior of its own (a helper function) 

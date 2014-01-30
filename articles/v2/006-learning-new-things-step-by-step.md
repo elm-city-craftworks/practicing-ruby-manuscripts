@@ -135,9 +135,7 @@ end
 
 This video shows the red square following the mouse pointer around the screen:
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/ywwcj1KH-1o?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/ywwcj1KH-1o?rel=0" frameborder="0" allowfullscreen></iframe>
 
 Once I got this code working, I was able to get a rough sense of how Ray handles its main event loop. The `on()` method allows you to define observers for various events. Any matching callbacks get triggered on each tick, before the `render` code gets executed. The `:mouse_motion` event was an easy one to start with because it simply yields the position of the mouse pointer on each tick, but the general concept could be applied just as well to key press events.
 
@@ -175,9 +173,7 @@ end
 
 The following video shows the red square creeping slowly to the left each time I hold down the left arrow key:
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/7k64QyBiq_0?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/7k64QyBiq_0?rel=0" frameborder="0" allowfullscreen></iframe>
 
 After I got this step working, I investigated a couple more things about Ray through experimentation. My tinkering caused me to discover that the `key()` method actually converts the symbolic value `:left` into a `Ray::Key` object, which is a simple container that looks up the key code for you. I also found out that the position of a drawable object appears to be immutable, so you can't do things like `@rect.pos.x -= 1` and expect it to work. Instead, you need to do vector addition and then assign a new position object. This design decision would have made a lot more sense to me if I kept the mathematical underpinnings of vector graphics in mind while working in this step, but instead, it just lead me to scratch my head for a while.
 
@@ -211,9 +207,7 @@ end
 
 After making this change, the red square was able to move in all directions, as shown in the following video. Moving diagonally simply requires holding down two keys at once (i.e., holding up and left moves northwest across the screen).
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/zW98M-tdzfo?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/zW98M-tdzfo?rel=0" frameborder="0" allowfullscreen></iframe>
 
 The main thing that I noticed was that moving the red square around was tedious because it was moving so slowly. I investigated a few options, including changing Ray's default frame rate, but my wife quickly talked me into doing something much simpler.
 
@@ -247,9 +241,7 @@ end
 
 This video shows the faster-moving rectangle. Jumping a distance of two pixels at a time still looks like smooth motion, so this approach definitely was more simple than any of the other ideas I had in mind.
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/B4_KZonH3qw?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/B4_KZonH3qw?rel=0" frameborder="0" allowfullscreen></iframe>
 
 This was the first time that I started feeling the desire to refactor things: updating four values when I could have updated one seemed a bit tedious. However, I try to keep a semistrict policy of not refactoring unless I am in deep pain for the first few hours of working with a new tool. The reason I do this is to allow my mind to work in a purely creative mode, avoiding invoking the inner "judge" that I talked about in [Practicing Ruby 2.2](http://practicingruby.com/articles/2). Take this note as fair warning, though: there will be more repetitive code to come before this exercise is completed!
 
@@ -337,9 +329,7 @@ end
 
 The following video shows bounds checking behavior that is slightly different than the previous implementation code; my original code used (-10,-10) rather than (0,0) as the abstract origin for my rectangle. If you run the code yourself, your rectangle will get closer to the edge at times than what this video shows.
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/FDbvirfhywY?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/FDbvirfhywY?rel=0" frameborder="0" allowfullscreen></iframe>
 
 In retrospect, this code was a bit buggy, as it really should have been looking at all the corners of the square, not just the top-left corner. But because it was good enough to keep the red square from completely sailing off into the void, I decided to save the fix as a problem for later. Putting it off would be a bad idea if I were writing production code, but thankfully the rules for spiking are different.
 
@@ -369,9 +359,7 @@ end
 
 The following video demonstrates collecting goodies. To make things a bit more challenging, I made it so that you must completely cover the white squares rather than simply touching them.
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/MmLlCMS0a7s?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/MmLlCMS0a7s?rel=0" frameborder="0" allowfullscreen></iframe>
 
 Once I figured out how to use `Ray::Rect`, implementing this functionality was relatively straightforward. However, my early confusion about `Ray::Polygon.rectangle` made me think that it returned a `Ray::Rect` object, which it does not. After digging through the source for both `Polygon` and `Rect` at both the Ruby level and the C level, I could not find an easy way to automatically convert a rectangular polygon into a `Rect` object, maybe because Ray is still a pretty young library, or maybe because of a design decision. 
 
@@ -400,9 +388,7 @@ end
 
 The following video demonstrates that the game can now be won. You may want to fast-forward a bit, as it takes a while to collect all those white squares.
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/G2gqOCoK4_o?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/G2gqOCoK4_o?rel=0" frameborder="0" allowfullscreen></iframe>
 
 This was a really simple step, so there isn't much more to say about it. The next step was to introduce baddies into the game. 
 
@@ -492,9 +478,7 @@ end
 
 This video shows that the game ends in failure as soon as the red square touches a blue square:
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/4W37HjwBHiw?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/4W37HjwBHiw?rel=0" frameborder="0" allowfullscreen></iframe>
 
 In this step, I explicitly built even more `Ray::Rect` objects, pushing me even closer to the breaking point—a point at which refactoring was not simply desirable but absolutely necessary. But with only one step left to implement before completing the exercise, I pressed on.
 
@@ -538,9 +522,7 @@ end
 
 The following video shows a complete run of the game, ending in victory. Before you try it out yourself and end up frustrated, please note that I recorded about 20 losses before getting conditions favorable enough for me to win.
 
-<div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/290MSnc72Jg?rel=0" frameborder="0" allowfullscreen></iframe>
-</div>
+<iframe width="640" height="480" src="//www.youtube.com/embed/290MSnc72Jg?rel=0" frameborder="0" allowfullscreen></iframe>
 
 At this point, I accomplished my goal of having a fairly interesting playable game in 13 small steps. If I wanted to go further, I would first go back and comprehensively refactor this code, and I would also study Ray in a more detailed fashion. However, I was thrilled to be able to get this far without doing that.
 

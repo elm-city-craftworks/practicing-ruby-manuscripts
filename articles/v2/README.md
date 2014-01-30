@@ -8,7 +8,6 @@ following articles on practicingruby.com:
 * [Issue 2.4: Implementing Enumerable and Enumerator in Ruby](http://practicingruby.com/articles/shared/ggcwduoyfqmz) (2011.09.13)
 * [Issue 2.5: Thoughts on regression testing](http://practicingruby.com/articles/shared/ggcwduoyfqmz) (2011.09.20)
 * [Issue 2.6: Learning new things, step by step](http://practicingruby.com/articles/shared/vbmlgkdtahzd) (2011.09.27)
-* [Issue 2.6: Learning new things, step by step](http://practicingruby.com/articles/shared/vbmlgkdtahzd) (2011.09.27)
 * [Issue 2.7: "Unobtrusive Ruby" in practice](http://practicingruby.com/articles/shared/ozkzbsdmagcm) (2011.10.04)
 * [Issue 2.8: Ruby and the singleton pattern don't get along](http://practicingruby.com/articles/shared/jleygxejeopq) (2011.10.11)
 * [Issue 2.9: Building Unix-style command line applications](http://practicingruby.com/articles/shared/qyxvmrgmhuln) (2011.10.18)

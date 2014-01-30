@@ -113,7 +113,7 @@ Lazy objects can also represent infinite or repeating sequences in a very elegan
 While infinite sequences may seem like a very academic topic, they show up in some practical applications as well. For example, some video games use procedural generation to produce seemingly infinite randomly generated maps. The video below demonstrates that technique being used in a very crude manner, but the same general approach could be used to build rich three dimensional environments as well, such as the ones found in [MineCraft](http://www.minecraft.net/). (_NOTE: I accidentally uploaded this video with ambient sounds rather than muted, and won't be able to fix this until I return from vacation after December 15th. If you don't like the sound of keyboard motions, heavy breathing, and some weird beeping noise: mute your audio before playing this video. Sorry!_)
 
 <div align="center">
-<iframe width="640" height="480" src="http://www.youtube.com/embed/fg-dYZfd6Y4?rel=0" frameborder="0" allowfullscreen></iframe>
+<iframe width="640" height="480" src="//www.youtube.com/embed/fg-dYZfd6Y4?rel=0" frameborder="0" allowfullscreen></iframe>
 </div>
 
 To implement the map generation code, I put together a simple `Location` object which is essentially an infinite two dimensional doubly linked list. Notice how the class definition below makes extensive use of the common `||=` idiom to handle the lazy evaluation and caching.
