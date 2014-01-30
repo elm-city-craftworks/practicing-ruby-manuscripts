@@ -1,4 +1,4 @@
-These articles are from Practicing Ruby's fourth volume, which ran from
+These articles are from Practicing Ruby's fifth volume, which ran from
 August 2012 to December 2012. The manuscripts in this folder correspond to the
 following articles on practicingruby.com:
 
