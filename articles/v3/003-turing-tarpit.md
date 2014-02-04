@@ -44,7 +44,7 @@ and get right to the juicy parts.
 
 Rather than a typical article, this issue is instead an interactive challenge
 for our readers to try at home. I've posted a [simple and functional Brainfuck
-interpreter](https://github.com/elm-city-craftworks/turing_tarpit/tree/starting_point) on github,
+interpreter](https://github.com/elm-city-craftworks/turing_tarpit/tree/starting_point) on GitHub,
 and I'm inviting all of you to look for ways of improving it. The code itself is
 good in places and not so good in others, and I've intentionally left in some
 things that can be improved. Your challenge, if you choose to accept it, is as
