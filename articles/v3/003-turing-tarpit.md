@@ -1,3 +1,8 @@
+> NOTE: This article describes an interactive challenge that was done in
+> realtime at the time it was published. You can still make use of it
+> by starting from the initial version of the code, but if you'd
+> rather skip to the end results, be sure to read [Issue 3.4](https://practicingruby.com/articles/spiral-staircase-of-refactoring).
+
 A programming language that is endlessly flexible but difficult to use because
 of its lack of support for common operations is known as a [Turing
 tarpit](http://en.wikipedia.org/wiki/Turing_tarpit). While a range of esoteric
@@ -39,20 +44,19 @@ and get right to the juicy parts.
 
 Rather than a typical article, this issue is instead an interactive challenge
 for our readers to try at home. I've posted a [simple and functional Brainfuck
-interpreter](https://github.com/elm-city-craftworks/turing_tarpit) on github,
+interpreter](https://github.com/elm-city-craftworks/turing_tarpit/tree/starting_point) on github,
 and I'm inviting all of you to look for ways of improving it. The code itself is
 good in places and not so good in others, and I've intentionally left in some
 things that can be improved. Your challenge, if you choose to accept it, is as
 follows:
 
-* If you spot things in the code that can be improved, point them out in the comments here or via github issues.
-* If you spot a bug, file a bug report via github issues and optionally send a pull request that includes a  failing test.
+* If you spot things in the code that can be improved, let me know!
+* If you spot a bug, file a bug report via github issues and optionally send a pull request that includes a failing test.
 * If you have time to make a refactoring or improvement yourself, fork the project and submit pull requests
 * If you want to add documentation patches, those are welcome too!
-* If you have questions, ask here or via the #practicingruby channel on Freenode (password is listed in [FAQ](http://practicingruby.com/community/faq))
 * Feel free to work on this with friends and colleagues, even if they aren't Practicing Ruby subscribers.
 
-In [Issue 3.4](http://practicingruby.com/articles/shared/ndejcopauhne), I will
+In [Issue 3.4](https://practicingruby.com/articles/spiral-staircase-of-refactoring), I will
 go over the improvements we made to this project as a group, and discuss why
 they're worthwhile. Because I know there are several things that need
 improvement in this code that are pretty general in nature, I'm reasonably sure
@@ -61,11 +65,11 @@ Ruby idioms, as opposed to a collection of esoterica. But since I don't know
 what to expect from your contributions, the exact contents will be a surprise
 even to me.
 
-If you want to participate in this experiment, please submit your suggestions
+<strike>If you want to participate in this experiment, please submit your suggestions
 and patches by 23:59 UTC on Sunday, January 22, 2012. Anyone whose contributions I
 reference in Issue 3.4 will be acknowledged for their work, and will have my
 eternal gratitude for their willingness to put the *practice* back in
 *Practicing Ruby*. 
 
 Come be a part of history and help me create: **The Most Incredible Brainfuck
-Implementation EVER!**
+Implementation EVER!**</strike>
