@@ -64,12 +64,3 @@ that article will be a generally interesting discussion on software design and
 Ruby idioms, as opposed to a collection of esoterica. But since I don't know
 what to expect from your contributions, the exact contents will be a surprise
 even to me.
-
-<strike>If you want to participate in this experiment, please submit your suggestions
-and patches by 23:59 UTC on Sunday, January 22, 2012. Anyone whose contributions I
-reference in Issue 3.4 will be acknowledged for their work, and will have my
-eternal gratitude for their willingness to put the *practice* back in
-*Practicing Ruby*. 
-
-Come be a part of history and help me create: **The Most Incredible Brainfuck
-Implementation EVER!**</strike>
