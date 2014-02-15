@@ -1,3 +1,8 @@
+> Note: This article series on modules is also available as a [PDF download]. The
+> PDF version has been revised and is more up-to-date than what you see here.
+
+[PDF download]:https://github.com/elm-city-craftworks/pr-monthly/blob/gh-pages/b5e5a89847701c4aa7c170cf/sept-2012-modules.pdf?raw=true
+
 In the [last issue](http://practicingruby.com/articles/38), we discussed the use of `extend self` in great detail, but neglected to cover a pair of alternatives that seem on the surface to be functionally equivalent. While I don't want to spend too much time rehashing an old topic, I want to at least provide an example of each approach and comment on their quirks.
 
 ### Defining methods at the module level

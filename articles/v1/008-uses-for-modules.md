@@ -1,3 +1,8 @@
+> Note: This article series on modules is also available as a [PDF download]. The
+> PDF version has been revised and is more up-to-date than what you see here.
+
+[PDF download]:https://github.com/elm-city-craftworks/pr-monthly/blob/gh-pages/b5e5a89847701c4aa7c170cf/sept-2012-modules.pdf?raw=true
+
 Modules are part of what makes Ruby's design beautiful. However, since they do not have a direct analogy in any mainstream programming language, it is easy to get a bit confused about what they should be used for. While most folks quickly encounter at least some of their use cases, typically only very experienced Ruby developers know their true versatilty.
 
 In this four part article series, I aim to demystify Ruby modules by showing many practical use cases, explaining some tricky details along the way. We'll work through some of the fundamentals in the first two issues, and move into more advanced examples in the second two. Today we'll kick off this series by looking at the most simple, but perhaps most important ability modules offer us, the creation of namespaces.

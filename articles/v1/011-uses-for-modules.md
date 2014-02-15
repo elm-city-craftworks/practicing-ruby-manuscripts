@@ -1,3 +1,8 @@
+> Note: This article series on modules is also available as a [PDF download]. The
+> PDF version has been revised and is more up-to-date than what you see here.
+
+[PDF download]:https://github.com/elm-city-craftworks/pr-monthly/blob/gh-pages/b5e5a89847701c4aa7c170cf/sept-2012-modules.pdf?raw=true
+
 Today we're going to wrap up this series on modules by looking at how mixins can be useful for implementing custom behavior on individual objects. In particular, we'll be looking at how modules can be used both as a replacement for monkey patching, as well as for constructing systems that can be extended without the need for monkey patching. While neither of these techniques are going to be something you'll use every day, they really come in handy when you run into a situation that calls for them.
 
 ### Modules instead of Monkey Patches

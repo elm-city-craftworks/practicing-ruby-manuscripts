@@ -1,3 +1,8 @@
+> Note: This article series on modules is also available as a [PDF download]. The
+> PDF version has been revised and is more up-to-date than what you see here.
+
+[PDF download]:https://github.com/elm-city-craftworks/pr-monthly/blob/gh-pages/b5e5a89847701c4aa7c170cf/sept-2012-modules.pdf?raw=true
+
 In the last two issues, we covered mixins and namespacing, two of the most common uses for modules. In the second half of this series, we'll look at some other ways to use modules that are not quite so obvious.
 
 We can now focus on the question that caused me to write this series in the

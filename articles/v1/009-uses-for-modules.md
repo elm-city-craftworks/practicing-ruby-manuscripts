@@ -1,3 +1,8 @@
+> Note: This article series on modules is also available as a [PDF download]. The
+> PDF version has been revised and is more up-to-date than what you see here.
+
+[PDF download]:https://github.com/elm-city-craftworks/pr-monthly/blob/gh-pages/b5e5a89847701c4aa7c170cf/sept-2012-modules.pdf?raw=true
+
 ### Using Mix-ins to Augment Class Definitions
 
 Although knowing [how to use modules for namespacing](http://practicingruby.com/articles/36) is important, it's really only a small part of what you can do with modules. What modules do best is providing a convenient way to write code that can be mixed into other objects, augmenting their behaviors. Because modules facilitate code sharing in a way that is distinct from both the general OO concept of class inheritance and from things like Java's interfaces, they require you to think about your design in a way that's a bit different from most other object oriented programming languages.
