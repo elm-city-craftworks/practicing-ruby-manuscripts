@@ -59,8 +59,9 @@ FF 00 00
 If you run the example script and open the image file, you will see something similar to what is shown below once you zoom in close enough to see the individual pixels:
 
 <div align="center">
-  <img src="http://i.imgur.com/XhKW1.png">
+![Pixels](http://i.imgur.com/XhKW1.png)
 </div>
+
 
 By experimenting a bit with changing some of the values in the pixel array by hand, you will fairly quickly discover the overall structure of the array and the way pixels are represented. After figuring this out, you might also be able to look back on the rest of the file and determine what a few of the fields in the headers are without looking at the documentation.
 
