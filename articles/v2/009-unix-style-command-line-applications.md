@@ -1,10 +1,23 @@
-Although these days we may look at Ruby as a language for web development, it was born as a language for the command line. In this article, we'll get back to those roots by building a partial implementation of the standard Unix command `cat`.
+Ruby is best known as a web development language, but in its early days it was
+mainly used on the command line. In this article, we'll get back to those roots by building a partial implementation of the standard Unix command `cat`.
 
 The core purpose of the `cat` utility is to read in a list of input files, concatenate them, and output the resulting text to the command line. You can also use `cat` for a few other useful things, such as adding line numbers and suppressing extraneous whitespace. If we stick to these commonly used features, the core functionality of `cat` is something even a novice programmer would be able to implement without too much effort.
 
-That said, there is a big difference between knowing how to write some basic text manipulation code and understanding how to write a command-line application that comfortably integrates into a Unix-like command-line environment. If the [set of acceptance tests](https://gist.github.com/1293709) that I've used to compare the original `cat` utility to my Ruby-based `rcat` tool look straightforward enough to you, you can probably try to implement it yourself before reading on. But don't worry if you feel like you don't even know where to start: I've provided a detailed walkthrough of my solution that will teach you everything that you need to know.
+The tricky part of building a `cat` clone is that it involves more than just
+some basic text manipulation; you also need to know about some 
+stream processing and error handling techniques that are common in Unix
+utilities. The [acceptance tests](https://gist.github.com/1293709) 
+that I've used to compare the original `cat` utility to my Ruby-based `rcat` 
+tool reveal some of the extra details that need to be considered when
+building this sort of command line application.
 
-_NOTE: Regardless of whether you are attempting to build your own version of `rcat`, you'll need to have the source code for [my implementation of rcat](https://github.com/elm-city-craftworks/rcat) easily accessible as you work through the rest of this article. Please either clone the repository now or keep the GitHub file browser open while reading._
+If you are already fairly comfortable with building command line tools, you may
+want to try implementing your own version of `rcat` before reading on. But don't
+worry if you wouldn't even know where to start: I've provided a 
+detailed walkthrough of my solution that will teach you everything 
+that you need to know.
+
+> **NOTE:** You'll need to have the source code for [my implementation of rcat](https://github.com/elm-city-craftworks/rcat) easily accessible as you work through the rest of this article. Please either clone the repository now or keep the GitHub file browser open while reading.
 
 ### Building an executable script
 
@@ -98,7 +111,8 @@ If we needed only to pass these three tests, we'd be in luck. Ruby provides a sp
 ARGF.each_line { |line| print line }
 ```
 
-However, the actual behavior of `cat` is a bit more complex than this, and it ended up being more convenient to write some custom code that works in a fashion somewhat similar to `ARGF`:
+However, the real`cat` utility does a lot more than what `ARGF` provides,
+so it was necessary to write some custom code to handle stream processing:
 
 ```ruby
 module RCat
@@ -176,7 +190,10 @@ StopIteration: iteration reached an end
 => nil
 ```
 
-Using this pattern makes it possible for `render_line` to actually consume more than one line from the input stream at once. If you work through the logic that is necessary to get the following test to pass, you might catch a glimpse of the benefits of this general approach:
+Using this pattern makes it possible for `render_line` to actually consume more
+than one line from the input stream at once. If you work through the logic that
+is necessary to get the following test to pass, you might catch a glimpse of the
+benefits of this technique:
 
 ```ruby
 cat_output  = `cat -s #{spaced_file}`
@@ -185,7 +202,9 @@ rcat_output = `rcat -s #{spaced_file}`
 fail "Failed 'cat -s == rcat -s'" unless cat_output == rcat_output
 ```
 
-Tracing the executation path for `rcat -s` will lead you to this line of code in `render_line`, which is the whole reason I decided to use this `Enumerator`-based approach:
+Tracing the executation path for `rcat -s` will lead you to this line of code in
+`render_line`, which is the whole reason I decided to use this
+`Enumerator`-based implementation:
 
 ```ruby
 lines.next while lines.peek.chomp.empty?
@@ -193,8 +212,8 @@ lines.next while lines.peek.chomp.empty?
 
 This code does an arbitrary amount of line-by-line lookahead until either a nonblank line is found or the end of the file is reached. It does so in a purely stateless and memory-efficient manner and is perhaps the most interesting line of code in this entire project. The downside of this approach is that it requires the entire `RCat::Display` object to be designed from the ground up to work with `Enumerator` objects. However, I struggled to come up with an alternative implementation that didn't involve some sort of complicated state machine/buffering mechanism that would be equally cumbersome to work with.
 
-As tempting as it is to continue discussing the pros and cons of different
-approaches to this particular problem, it's probably best for us to get back on
+As tempting as it is to continue discussing the pros and cons of the different
+ways of solving this particular problem, it's probably best for us to get back on
 track and look at some more basic problems that arise when working on
 command-line applications. I will now turn to the `parse_options` method that I asked you 
 to treat as a black box in our earlier examples.
@@ -395,7 +414,10 @@ rescue OptionParser::InvalidOption => err
 end
 ```
 
-Looking back on things, the errors I've rescued here are somewhat low level, and it might have been better to rescue them where they occur and then reraise custom errors provided by `RCat`. This approach would lead to slightly more organized code similar to what you see here:
+Looking back on things, the errors I've rescued here are somewhat low level, and
+it might have been better to rescue them where they occur and then reraise
+custom errors provided by `RCat`. This approach would lead to code similar to
+what is shown below:
 
 ```ruby
 begin
