@@ -1,14 +1,29 @@
-Most of us enjoy Ruby because it allows us to express our thoughts without worrying too much about low-level computing concepts. With that in mind, it may come as a surprise that Ruby provides a number of tools specifically designed for making low-level computing easy. In this article we'll use a few of those tools to encode and decode binary files, demonstrating just how easy Ruby makes it to get down to the realm of bits and bytes.
+Even if we rarely give them much thought, binary file formats are everywhere.
+Ranging from images to audio files to nearly every other sort of media you can
+imagine, binary files are used because they are an efficient way of
+storing information in a ready-to-process format.
 
-In the examples that follow, we will be working with the bitmap image format. I chose this format because it has a simple structure and is well documented. Despite the fact that you'll probably never need to work with bitmap images at all in your day-to-day work, the concepts involved in both reading and writing a BMP file are pretty much the same as any other file format you'll encounter. For this reason, you're encouraged to focus on the techniques being demonstrated rather than the implementation details of the file format as you read through this article.
+Despite their usefulness, binary files are cryptic and appear to be 
+difficult to understand on the surface. Unlike a
+text-based data format, simply looking at a binary file won't give you any 
+hints about what its contents are. To even begin to understand a binary
+encoded file, you need to read its format specification. These specifications 
+tend to include lots of details about obscure edge cases, and that makes for
+challenging reading unless you already have spent a fair amount of time 
+working in the realm of bits and bytes. For these reasons, it's probably better
+to learn by example rather than taking a more formal approach.
 
-_NOTE: This article assumes an understanding of some low level computing concepts such as the way integers are represented in binary format, including the difference between signed/unsigned integers and little/big endian byte order. You may want to watch this [introductory screencast](http://www.youtube.com/watch?v=BLnOD1qC-Vo&feature=player_detailpage#t=112s) if you don't already have a firm computer science background. I myself am not an expert in these topics, so that makes it even harder for me to explain them on the fly._
+In this article, I will show you how to encode and decode the bitmap image
+format. Bitmap images have a simple structure, and the format is well documented. 
+Despite the fact that you'll probably never need to work with bitmap images 
+at all in your day-to-day work, the concepts involved in both reading and 
+writing a BMP file are pretty much the same as any other file format you'll encounter.
 
 ### The anatomy of a bitmap
 
 A bitmap file consists of several sections of metadata followed by a pixel array that represents the color and position of every pixel in the image. 
-
-While the information contained within a bitmap file is easy to process, its contents can appear cryptic due to the fact that the data in the file is encoded as a non-textual sequence of bytes. The example below demonstrates that even if you break the sequence on its section and field boundaries, it would still be a real challenge to understand without any documentation handy:
+The example below demonstrates that even if you break the sequence up into its different parts, it would still be a real 
+challenge to understand without any documentation handy:
 
 ```ruby
 # coding: binary
@@ -58,9 +73,7 @@ FF 00 00
 
 If you run the example script and open the image file, you will see something similar to what is shown below once you zoom in close enough to see the individual pixels:
 
-<div align="center">
 ![Pixels](http://i.imgur.com/XhKW1.png)
-</div>
 
 
 By experimenting a bit with changing some of the values in the pixel array by hand, you will fairly quickly discover the overall structure of the array and the way pixels are represented. After figuring this out, you might also be able to look back on the rest of the file and determine what a few of the fields in the headers are without looking at the documentation.
