@@ -60,7 +60,10 @@ out = hex_data.each_with_object("") { |e,s| s << Integer("0x#{e}") }
 File.binwrite("example1.bmp", out)
 ```
 
-However, if you understand what each field is meant to represent, the values begin to make a whole lot more sense. For example, if you know that this is a 24-bit per pixel image that is two pixels wide, and two pixels high, you might be able to make sense of the pixel array data. Below I've listed the part of the file which represents that information so that you can take a closer look.
+Once you learn what each section represents, you can start
+to interpret the data. For example, if you know that this is a
+24-bit per pixel image that is two pixels wide, and two pixels high, you might
+be able to make sense of the pixel array data shown below:
 
 ```
 00 00 FF
@@ -71,12 +74,14 @@ FF 00 00
 00 00
 ```
 
-If you run the example script and open the image file, you will see something similar to what is shown below once you zoom in close enough to see the individual pixels:
+If you run this example script and open the image file it produces, you'll see
+something similar to what is shown below once you zoom in close enough to see
+its pixels:
 
 ![Pixels](http://i.imgur.com/XhKW1.png)
 
 
-By experimenting a bit with changing some of the values in the pixel array by hand, you will fairly quickly discover the overall structure of the array and the way pixels are represented. After figuring this out, you might also be able to look back on the rest of the file and determine what a few of the fields in the headers are without looking at the documentation.
+By experimenting with changing some of the values in the pixel array by hand, you will fairly quickly discover the overall structure of the array and the way pixels are represented. After figuring this out, you might also be able to look back on the rest of the file and determine what a few of the fields in the headers are without looking at the documentation.
 
 After exploring a bit on your own, you should check out the [field-by-field walkthrough of a 2x2 bitmap file](http://en.wikipedia.org/wiki/BMP_file_format#Example_1) that this example was based on. The information in that table is pretty much all you'll need to know in order to make sense of the bitmap reader and writer implementations I've built for this article.
 
@@ -98,7 +103,10 @@ bmp.save_as("example_generated.bmp")
 
 Like most binary formats, the bitmap format has a tremendous amount of options that make building a complete implementation a whole lot more complicated than just building a tool which is suitable for generating a single type of image. I realized shortly after skimming the format description that you can skip out on a lot of the boilerplate information if you stick to 24bit-per-pixel images, so I decided to do exactly that.
 
-Looking at the implementation from the outside-in, it's easy to see the general structure I laid out for the object. Pixels are stored as a boring array of arrays, and all the interesting things happen at the time you write the image out to file.
+Looking at the implementation from the outside-in, it's easy to see the general
+structure I laid out for the object. Pixels are stored in a two-dimensional
+array, and all the interesting things happen at the time you write the image out
+to file:
 
 ```ruby
 class BMP 
@@ -158,7 +166,11 @@ class BMP
 end
 ```
 
-Out of the five fields in this header, only the file size ended up being dynamic. I was able to treat the pixel array offset as a constant because the headers for 24 bit color images take up a fixed amount of space. The [computations I used for the file size](http://en.wikipedia.org/wiki/BMP_file_format#Pixel_storage) are taken directly from wikipedia, and will make sense a bit later once we examine the way that the pixel array gets encoded.
+Out of the five fields in this header, only the file size ended up being
+dynamic. I was able to treat the pixel array offset as a constant because the
+headers for 24 bit color images take up a fixed amount of space. The file size
+computations[^1] will make sense later once we examine the way that the pixel 
+array gets encoded.
 
 The tool that makes it possible for us to convert these various field values into binary sequences in such a convenient way is `Array#pack`. If you note that the calculated file size of a 2x2 bitmap is 70, it becomes clear what `pack` is actually doing for us when we examine the byte by byte values in the following example:
 
@@ -433,3 +445,5 @@ There are two things that make working with binary file formats a bit challengin
 While software development is about much more than computing, binary file processing brings you into the computer's realm and is much less forgiving than other kinds of programming. Formally trained computer science students or folks who have programmed (successfully) in C before won't have problems with developing this kind of discipline, but it was a challenge for me coming from a hack-and-slash Perl background.
 
 But these two challenges are exactly why I encourage you to continue to study binary file formats and play around with other low level features to Ruby. The barrier-to-entry is lower than that of C, but it will still expose you to ways of thinking that will be very good for you.
+
+[^1]: To determine the storage space needed for the pixel array in BMP images, I used the computations described in the [Wikipedia article on bitmap images](http://en.wikipedia.org/wiki/BMP_file_format#Pixel_storage).
