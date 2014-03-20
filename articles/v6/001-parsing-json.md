@@ -22,7 +22,7 @@ I'm going to be testing this with Ruby 1.9.3, but it should work under any
 flavor of Ruby you wish to try.  Mainly, we will be using a tool called `Racc`,
 and a tool called `StringScanner`.
 
-**Racc:**
+**Racc**
 
 We'll be using Racc to generate our parser.  Racc is an LALR parser generator
 similar to YACC.  YACC stands for "Yet Another Compiler Compiler", but this is
@@ -40,10 +40,10 @@ do not need it.
 Don't worry if this doesn't make sense right now.  It will become more clear
 when we get our hands dirty and start playing with code.
 
-**StringScanner:**
+**StringScanner**
 
-[StringScanner](http://ruby-doc.org/stdlib-1.9.3/libdoc/strscan/rdoc/StringScanner.html)
-is a class that (just like the name implies) helps us scan strings.  It keeps track of where we are
+Just like the name implies, [StringScanner](http://ruby-doc.org/stdlib-1.9.3/libdoc/strscan/rdoc/StringScanner.html)
+is a class that helps us scan strings.  It keeps track of where we are
 in the string, and lets us advance forward via regular expressions or by
 character.
 
@@ -87,7 +87,7 @@ irb(main):009:0>
 
 The `getch` method returns the next character, and advances the pointer by one.
 
-Now that we've covered some of the basics for scanning strings, let's take a 
+Now that we've covered the basics for scanning strings, let's take a 
 look at using Racc.
 
 ## Racc Basics
@@ -145,12 +145,16 @@ expression `(a|c)+`.  Next, a production for 'abb':
 ```
 class Parser
 rule
+  string
+    | a_or_cs abb
+    | abb         
+    ;
   a_or_cs
     : a_or_cs a_or_c
     | a_or_c
     ;
   a_or_c : 'a' | 'c' ;
-  abb    : 'a' 'b' 'b';
+  abb    : 'a' 'b' 'b' 
 end
 ```
 
@@ -188,21 +192,28 @@ arbitrary code:
 class Parser
 rule
   string
-    : a_or_cs abb
-    | abb         { puts "I found abb!" }
+    | a_or_cs abb
+    | abb         
     ;
   a_or_cs
     : a_or_cs a_or_c
     | a_or_c
     ;
   a_or_c : 'a' | 'c' ;
-  abb    : 'a' 'b' 'b';
+  abb    : 'a' 'b' 'b' { puts "I found abb!" };
 end
 ```
 
 The Ruby code we want to execute should be wrapped in curly braces and placed
-after the rule where we want the trigger to fire.  Let's use the knowledge we
-have so far to build an event based JSON parser.
+after the rule where we want the trigger to fire.
+
+To use this parser, we also need a tokenizer that can break the input
+data into tokens, along with some other boilerplate code. If you are curious
+about how that works, you can check out [this standalone
+example](https://gist.githubusercontent.com/sandal/9532497/raw/8e3bb03fc24c8f6604f96516bf242e7e13d0f4eb/parser_example.y).
+
+Now that we've covered the basics, we can use knowledge we have so far to build 
+an event based JSON parser and tokenizer.
 
 ## Building our JSON Parser
 
