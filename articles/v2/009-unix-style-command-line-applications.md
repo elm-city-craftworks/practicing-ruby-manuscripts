@@ -111,7 +111,7 @@ If we needed only to pass these three tests, we'd be in luck. Ruby provides a sp
 ARGF.each_line { |line| print line }
 ```
 
-However, the real`cat` utility does a lot more than what `ARGF` provides,
+However, the real `cat` utility does a lot more than what `ARGF` provides,
 so it was necessary to write some custom code to handle stream processing:
 
 ```ruby
