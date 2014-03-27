@@ -186,7 +186,7 @@ array gets encoded.
 
 The tool that makes it possible for us to convert these various field values
 into binary sequences is `Array#pack`. If you note that the file size of our
-reference image is 2x2 bitmap is 70 btres, it becomes clear what `pack`
+reference image is 2x2 bitmap is 70 bytes, it becomes clear what `pack`
 is actually doing for us when we examine the byte by byte values 
 in the following example:
 
