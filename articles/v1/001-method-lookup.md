@@ -5,7 +5,7 @@ Below we have a simple report class tasked with performing some basic data manip
 ```ruby
 class Report
   def initialize(ledger)
-    @balance          = ledger.inject(0) { |sum, (k,v)| sum + v }
+    @balance          = ledger.inject(0) { |sum, (_,v)| sum + v }
     @credits, @debits = ledger.partition { |k,v| v > 0 }
   end
 
