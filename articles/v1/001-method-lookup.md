@@ -61,7 +61,7 @@ require "date"
 class EmailReport < Report
   def header
     "Dear Valued Customer,\n\n"+
-    "This report shows your account activity as of #{Date.today}\n"
+    "This report shows your account activity as of #{Time.now.to_date}\n"
   end
 
   def banner
