@@ -440,3 +440,5 @@ Error handling is a topic that could easily span several articles. But when it c
 Holy cow, this was a hard article to write! When I originally decided to write a `cat` clone, I worried that the example would be too trivial and boring to be worth writing about. However, once I actually implemented it and sat down to write this article, I realized that building command-line applications that respect Unix philosophy and play nice with others is harder than it seems on the surface.
 
 Rather than treating this article as a definitive reference for how to build good command-line applications, perhaps we can instead use it as a jumping-off point for future topics to cover in a more self-contained fashion. I'd love to hear your thoughts on what topics in particular interested you and what areas you think should have been covered in greater detail.
+
+> NOTE: If you'd like to learn more about this topic, consider doing the Practicing Ruby self-guided course on [Streams, Files, and Sockets](https://practicingruby.com/articles/study-guide-1?u=dc2ab0f9bb). You've already completed one of its reading exercises by reading this article!
