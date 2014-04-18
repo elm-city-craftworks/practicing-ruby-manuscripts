@@ -441,4 +441,4 @@ Holy cow, this was a hard article to write! When I originally decided to write a
 
 Rather than treating this article as a definitive reference for how to build good command-line applications, perhaps we can instead use it as a jumping-off point for future topics to cover in a more self-contained fashion. I'd love to hear your thoughts on what topics in particular interested you and what areas you think should have been covered in greater detail.
 
-> NOTE: If you'd like to learn more about this topic, consider doing the Practicing Ruby self-guided course on [Streams, Files, and Sockets](https://practicingruby.com/articles/study-guide-1?u=dc2ab0f9bb). You've already completed one of its reading exercises by reading this article!
+> NOTE: If you'd like to learn more about this topic, consider doing the Practicing Ruby self-guided course on [Streams, Files, and Sockets](https://practicingruby.com/articles/study-guide-1?u=dc2ab0f9bb). You've already completed one of its reading exercises by working through this article!
