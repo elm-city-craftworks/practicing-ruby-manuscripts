@@ -191,7 +191,7 @@ in the following example:
 
 ```ruby
 header = ["BM", 70, 0, 0, 54].pack("A2Vv2V") 
-p header.bytes.map { |e| e.to_s(16).rjust(2,"0")  }
+p header.bytes.map { |e| "%.2x" % e }
 
 =begin expected output (NOTE: reformatted below for easier reading)
   ["42", "4d", 
