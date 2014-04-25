@@ -53,7 +53,7 @@ Fancy Hat: 54.40
 Kitteh Litteh: 5.00
 ```
 
-While not particularly pretty, this report is mostly what we'd expect to see. You can probably imagine how this information might be embedded within another reports, such as an email-based form letter with some header and footer information. One possible way to do this would be through class inheritance, as in the example below.
+While not particularly pretty, this report is mostly what we'd expect to see. You can probably imagine how this information might be embedded within another report, such as an email-based form letter with some header and footer information. One possible way to do this would be through class inheritance, as in the example below.
 
 ```ruby
 require "date"
