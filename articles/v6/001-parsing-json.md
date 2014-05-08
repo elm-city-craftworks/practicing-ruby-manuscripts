@@ -18,7 +18,7 @@ its an article about using parser and compiler tools in Ruby.
 
 ## The Tools We'll Be Using
 
-I'm going to be testing this with Ruby 1.9.3, but it should work under any
+I'm going to be testing this with Ruby 2.1.0, but it should work under any
 flavor of Ruby you wish to try.  Mainly, we will be using a tool called `Racc`,
 and a tool called `StringScanner`.
 
