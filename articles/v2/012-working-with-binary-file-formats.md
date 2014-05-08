@@ -1,4 +1,3 @@
-
 Even if we rarely give them much thought, binary file formats are everywhere.
 Ranging from images to audio files to nearly every other sort of media you can
 imagine, binary files are used because they are an efficient way of
@@ -192,7 +191,7 @@ in the following example:
 
 ```ruby
 header = ["BM", 70, 0, 0, 54].pack("A2Vv2V") 
-p header.bytes.map { |e| e.to_s(16).rjust(2,"0")  }
+p header.bytes.map { |e| "%.2x" % e }
 
 =begin expected output (NOTE: reformatted below for easier reading)
   ["42", "4d", 
@@ -504,3 +503,5 @@ that if you fully understand the examples in this article, then you are already
 well on your way to tackling pretty much any binary file format.
 
 [^1]: To determine the storage space needed for the pixel array in BMP images, I used the computations described in the [Wikipedia article on bitmap images](http://en.wikipedia.org/wiki/BMP_file_format#Pixel_storage).
+
+> NOTE: If you'd like to learn more about this topic, consider doing the Practicing Ruby self-guided course on [Streams, Files, and Sockets](https://practicingruby.com/articles/study-guide-1?u=dc2ab0f9bb). You've already completed one of its reading exercises by working through this article!
