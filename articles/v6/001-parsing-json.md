@@ -51,19 +51,13 @@ Let's try it out!  First we'll create a `StringScanner` object, then we'll scan
 some letters from it:
 
 ```ruby
-irb(main):001:0> require 'strscan'
-=> true
-irb(main):002:0> ss = StringScanner.new 'aabbbbb'
-=> #<StringScanner 0/7 @ "aabbb...">
-irb(main):003:0> ss.scan /a/
-=> "a"
-irb(main):004:0> ss.scan /a/
-=> "a"
-irb(main):005:0> ss.scan /a/
-=> nil
-irb(main):006:0> ss
-=> #<StringScanner 2/7 "aa" @ "bbbbb">
-irb(main):007:0>
+require 'strscan'
+
+ss = StringScanner.new 'aabbbbb' #=> #<StringScanner 0/7 @ "aabbb...">
+ss.scan /a/ #=> "a"
+ss.scan /a/ #=> "a"
+ss.scan /a/ #=> nil
+ss #=> #<StringScanner 2/7 "aa" @ "bbbbb">
 ```
 
 Notice that the third call to
@@ -76,13 +70,10 @@ We can also move through the scanner character by character using
 [StringScanner#getch](http://ruby-doc.org/stdlib-1.9.3/libdoc/strscan/rdoc/StringScanner.html#method-i-getch):
 
 ```ruby
-irb(main):006:0> ss
-=> #<StringScanner 2/7 "aa" @ "bbbbb">
-irb(main):007:0> ss.getch
-=> "b"
-irb(main):008:0> ss
-=> #<StringScanner 3/7 "aab" @ "bbbb">
-irb(main):009:0>
+ss #=> #<StringScanner 2/7 "aa" @ "bbbbb">
+ss.getch #=> "b"
+
+ss #=> #<StringScanner 3/7 "aab" @ "bbbb">
 ```
 
 The `getch` method returns the next character, and advances the pointer by one.
@@ -221,7 +212,7 @@ handler.  The document handler is responsible for collecting the JSON
 information and translating it to a Ruby data structure. When we read in 
 a JSON document, the following method calls are made:
 
-![method calls](http://i.imgur.com/HZ0Sa.png)
+![method calls](//i.imgur.com/HZ0Sa.png)
 
 It's time to get started building this system. We'll focus on building the 
 tokenizer first, then work on the grammar for the parser, and finally implement 
@@ -302,21 +293,16 @@ token, and the value.
 
 Let's try feeding the tokenizer a JSON string and see what tokens come out:
 
-```
-irb(main):003:0> tok = RJSON::Tokenizer.new StringIO.new '{"foo":null}'
-=> #<RJSON::Tokenizer:0x007fa8529fbeb8 @ss=#<StringScanner 0/12 @ "{\"foo...">>
-irb(main):004:0> tok.next_token
-=> ["{", "{"]
-irb(main):005:0> tok.next_token
-=> [:STRING, "\"foo\""]
-irb(main):006:0> tok.next_token
-=> [":", ":"]
-irb(main):007:0> tok.next_token
-=> [:NULL, "null"]
-irb(main):008:0> tok.next_token
-=> ["}", "}"]
-irb(main):009:0> tok.next_token
-=> nil
+```ruby
+tok = RJSON::Tokenizer.new StringIO.new '{"foo":null}'
+#=> #<RJSON::Tokenizer:0x007fa8529fbeb8 @ss=#<StringScanner 0/12 @ "{\"foo...">>
+
+tok.next_token #=> ["{", "{"]
+tok.next_token #=> [:STRING, "\"foo\""]
+tok.next_token #=> [":", ":"]
+tok.next_token #=> [:NULL, "null"]
+tok.next_token #=> ["}", "}"]
+tok.next_token #=> nil
 ```
 
 In this example, we wrap the JSON string with a `StringIO` object in order to
