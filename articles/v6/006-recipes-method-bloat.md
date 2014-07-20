@@ -31,7 +31,7 @@ is often critized for it's poor API design! There are many reasons
 why this style of interface is bad, but three obvious issues stand out:
 
 * Without a single unambiguous way of sorting the parameters, it is very
-difficult toremember their order.
+difficult to remember their order.
 
 * This style of interface makes it hard to set defaults for parameters in a
 flexible way. For example, consider the difficulty of setting default values for
