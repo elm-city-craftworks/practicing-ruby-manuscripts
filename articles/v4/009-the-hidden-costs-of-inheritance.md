@@ -97,9 +97,9 @@ about for a moment before you read on.
 
 ### PROBLEM 2: Interfaces tend to grow rapidly under inheritance
 
-I am going to attempt a proof without for words for this particular problem, 
-and leave it up to you to figure out *why* this can be a source of 
-maintenance headaches, but please share your thoughts in the comments:
+I am going to attempt a proof without words for this particular problem, and
+leave it up to you to figure out *why* this can be a source of maintenance
+headaches, but please share your thoughts in the comments:
 
 ```ruby
 >> (ActiveRecord::Base.instance_methods | 
