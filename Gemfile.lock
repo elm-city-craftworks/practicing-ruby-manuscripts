@@ -1,0 +1,13 @@
+GEM
+  specs:
+    coderay (1.1.0)
+    kramdown (1.4.2)
+    rake (10.3.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  coderay
+  kramdown
+  rake
