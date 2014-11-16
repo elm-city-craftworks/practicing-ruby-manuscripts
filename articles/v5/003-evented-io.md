@@ -538,7 +538,7 @@ of the feeling that they are a kind of deep voodoo that you'll never
 comprehend. Event-driven I/O is perfectly understandable; it is just a bit 
 messy.
 
-[chatserver]: https://raw.github.com/gist/3612925/315e7bfc5de7a029606b3885d71953acb84f112e/ChatServer.rb
+[chatserver]: https://gist.githubusercontent.com/sandal/3612925/raw/315e7bfc5de7a029606b3885d71953acb84f112e/ChatServer.rb 
 [timeless]: http://timelessrepo.com
 [camping]: https://github.com/camping
 [judofyr]: http://twitter.com/judofyr
