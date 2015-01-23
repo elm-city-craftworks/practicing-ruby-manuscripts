@@ -16,7 +16,7 @@ untested code. By rushing to fix things immediately, you may make
 things worse or not know which of your changes actually
 fixed the problem. As many of us have learned the hard way: a
 chaotic debugging process is no fun for you, and no fun for the people
-who rely on your saoftware.
+who rely on your software.
 
 Having a calm and collected way of approaching software defects goes a long way,
 especially if you also have a firm grasp of the tools and techniques that can
