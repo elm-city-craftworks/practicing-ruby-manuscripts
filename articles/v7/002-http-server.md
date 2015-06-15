@@ -407,3 +407,5 @@ Mathias Lafeldt for reviewing this article and providing feedback
 before we published it.*
 
 > NOTE: If you'd like to learn more about this topic, consider doing the Practicing Ruby self-guided course on [Streams, Files, and Sockets](https://practicingruby.com/articles/study-guide-1?u=dc2ab0f9bb). You've already completed one of its reading exercises by working through this article!
+
+> SEE ALSO: A [similar HTTP server](https://github.com/emilyhorsman/practicing-ruby-examples/blob/v7_002python/v7/002python27/http_server.py) written in Python, contributed by [Emily Horsman](https://twitter.com/emilymhorsman).
