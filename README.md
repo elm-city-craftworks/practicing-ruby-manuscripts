@@ -21,7 +21,7 @@ to hear from anyone who wishes to make use of these materials for any purpose.
 
 ## To support my work, please subscribe at practicingruby.com
 
-I believe that it's only right for me to release my articles for free after a
-reasonable amount of time has passed, but this project is still a TON of work,
+I believe that it's only right for me to release my articles under a free 
+documentation license, but this project is still a TON of work,
 and would not exist without my subscribers. You can make it possible for me 
 to keep publishing by signing up for a paid account. It's only $8/month, and it's totally worth it.
