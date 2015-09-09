@@ -242,7 +242,7 @@ It was easy to decide on using Dentaku in this particular project, for several r
 
 * The people who will be writing the formulas already understand basic computing concepts.
 
-* A programmer will be on hand to help customize the workflow and assist with problems as needed.
+* A programmer will available to customize the workflow and assist with problems as needed.
 
 If even a couple of these conditions were not met, the potential caveats of using Dentaku (or any similar formula processing tool) would require more careful consideration.
 
