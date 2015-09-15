@@ -36,7 +36,7 @@ p volume #=> 150
 
 Not much is going on here -- we have some named variables, some numerical values, and a simple formula: `length * width * height`.  Nothing in this example appears to be sensitive data, so on the surface it may not be clear why safety is a key concern here. 
 
-To understand the risks, you consider an alternative implementation that allows mathematical formulas to be evaluated directly as plain Ruby code. You implement the equivalent formula evalator without the use of an external library, just to see what it would look like:
+To understand the risks, you consider an alternative implementation that allows mathematical formulas to be evaluated directly as plain Ruby code. You implement the equivalent formula evaluator without the use of an external library, just to see what it would look like:
 
 ```ruby
 def evaluate_formula(expression, variables)
