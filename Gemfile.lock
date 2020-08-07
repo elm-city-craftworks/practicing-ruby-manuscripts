@@ -2,8 +2,10 @@ GEM
   remote: https://rubygems.org/
   specs:
     coderay (1.1.0)
-    kramdown (1.4.2)
+    kramdown (2.3.0)
+      rexml
     rake (10.3.2)
+    rexml (3.2.4)
 
 PLATFORMS
   ruby
